@@ -48,16 +48,16 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		<include refid="selectJobLogVo"/>
 	</select>
 	
-	<select id="selectJobLogById" parameterType="Long" resultMap="SysJobLogResult">
+	<select id="selectJobLogById" parameterType="Integer" resultMap="SysJobLogResult">
 		<include refid="selectJobLogVo"/>
 		where job_log_id = #{jobLogId}
 	</select>
 	
-	<delete id="deleteJobLogById" parameterType="Long">
+	<delete id="deleteJobLogById" parameterType="Integer">
  		delete from sys_job_log where job_log_id = #{jobLogId}
  	</delete>
  	
- 	<delete id="deleteJobLogByIds" parameterType="Long">
+ 	<delete id="deleteJobLogByIds" parameterType="Integer">
  		delete from sys_job_log where job_log_id in
  		<foreach collection="array" item="jobLogId" open="(" separator="," close=")">
  			#{jobLogId}

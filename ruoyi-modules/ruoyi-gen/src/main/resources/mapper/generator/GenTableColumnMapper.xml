@@ -110,7 +110,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         where column_id = #{columnId}
     </update>
 
-    <delete id="deleteGenTableColumnByIds" parameterType="Long">
+    <delete id="deleteGenTableColumnByIds" parameterType="Integer">
         delete from gen_table_column where table_id in
         <foreach collection="array" item="tableId" open="(" separator="," close=")">
             #{tableId}

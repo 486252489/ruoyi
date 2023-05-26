@@ -47,16 +47,16 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		<include refid="selectJobVo"/>
 	</select>
 	
-	<select id="selectJobById" parameterType="Long" resultMap="SysJobResult">
+	<select id="selectJobById" parameterType="Integer" resultMap="SysJobResult">
 		<include refid="selectJobVo"/>
 		where job_id = #{jobId}
 	</select>
 	
-	<delete id="deleteJobById" parameterType="Long">
+	<delete id="deleteJobById" parameterType="Integer">
  		delete from sys_job where job_id = #{jobId}
  	</delete>
  	
- 	<delete id="deleteJobByIds" parameterType="Long">
+ 	<delete id="deleteJobByIds" parameterType="Integer">
  		delete from sys_job where job_id in
  		<foreach collection="array" item="jobId" open="(" separator="," close=")">
  			#{jobId}

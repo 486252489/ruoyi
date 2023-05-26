@@ -64,14 +64,14 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		order by oper_id desc
 	</select>
 	
-	<delete id="deleteOperLogByIds" parameterType="Long">
+	<delete id="deleteOperLogByIds" parameterType="Integer">
  		delete from sys_oper_log where oper_id in
  		<foreach collection="array" item="operId" open="(" separator="," close=")">
  			#{operId}
         </foreach> 
  	</delete>
  	
- 	<select id="selectOperLogById" parameterType="Long" resultMap="SysOperLogResult">
+ 	<select id="selectOperLogById" parameterType="Integer" resultMap="SysOperLogResult">
 		<include refid="selectOperLogVo"/>
 		where oper_id = #{operId}
 	</select>

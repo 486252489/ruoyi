@@ -35,6 +35,7 @@
         <minio.version>8.2.2</minio.version>
         <poi.version>4.1.2</poi.version>
         <transmittable-thread-local.version>2.14.2</transmittable-thread-local.version>
+        <mybatisPlus.version>3.5.3</mybatisPlus.version>
     </properties>
 
     <!-- 依赖声明 -->
@@ -206,13 +207,19 @@
                 <version>${ruoyi.version}</version>
             </dependency>
 
+            <!--mybatis-plus服务-->
+            <dependency>
+                <groupId>com.baomidou</groupId>
+                <artifactId>mybatis-plus-boot-starter</artifactId>
+                <version>${mybatisPlus.version}</version>
+            </dependency>
+
         </dependencies>
     </dependencyManagement>
 
     <modules>
         <module>ruoyi-auth</module>
         <module>ruoyi-gateway</module>
-        <module>ruoyi-visual</module>
         <module>ruoyi-modules</module>
         <module>ruoyi-api</module>
         <module>ruoyi-common</module>

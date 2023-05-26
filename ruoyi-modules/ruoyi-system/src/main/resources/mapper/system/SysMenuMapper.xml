@@ -73,7 +73,7 @@
 		order by m.parent_id, m.order_num
 	</select>
     
-    <select id="selectMenuTreeByUserId" parameterType="Long" resultMap="SysMenuResult">
+    <select id="selectMenuTreeByUserId" parameterType="Integer" resultMap="SysMenuResult">
 		select distinct m.menu_id, m.parent_id, m.menu_name, m.path, m.component, m.`query`, m.visible, m.status, ifnull(m.perms,'') as perms, m.is_frame, m.is_cache, m.menu_type, m.icon, m.order_num, m.create_time
 		from sys_menu m
 			 left join sys_role_menu rm on m.menu_id = rm.menu_id
@@ -84,7 +84,7 @@
 		order by m.parent_id, m.order_num
 	</select>
 	
-	<select id="selectMenuListByRoleId" resultType="Long">
+	<select id="selectMenuListByRoleId" resultType="Integer">
 		select m.menu_id
 		from sys_menu m
             left join sys_role_menu rm on m.menu_id = rm.menu_id
@@ -102,7 +102,7 @@
 			 left join sys_user_role ur on rm.role_id = ur.role_id
 	</select>
 
-	<select id="selectMenuPermsByUserId" parameterType="Long" resultType="String">
+	<select id="selectMenuPermsByUserId" parameterType="Integer" resultType="String">
 		select distinct m.perms
 		from sys_menu m
 			 left join sys_role_menu rm on m.menu_id = rm.menu_id
@@ -111,14 +111,14 @@
 		where m.status = '0' and r.status = '0' and ur.user_id = #{userId}
 	</select>
 	
-	<select id="selectMenuPermsByRoleId" parameterType="Long" resultType="String">
+	<select id="selectMenuPermsByRoleId" parameterType="Integer" resultType="String">
 		select distinct m.perms
 		from sys_menu m
 			 left join sys_role_menu rm on m.menu_id = rm.menu_id
 		where m.status = '0' and rm.role_id = #{roleId}
 	</select>
 	
-	<select id="selectMenuById" parameterType="Long" resultMap="SysMenuResult">
+	<select id="selectMenuById" parameterType="Integer" resultMap="SysMenuResult">
 		<include refid="selectMenuVo"/>
 		where menu_id = #{menuId}
 	</select>
@@ -195,7 +195,7 @@
 		)
 	</insert>
 	
-	<delete id="deleteMenuById" parameterType="Long">
+	<delete id="deleteMenuById" parameterType="Integer">
 	    delete from sys_menu where menu_id = #{menuId}
 	</delete>
 

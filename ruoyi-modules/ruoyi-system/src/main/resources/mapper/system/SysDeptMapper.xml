@@ -47,7 +47,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		order by d.parent_id, d.order_num
     </select>
     
-    <select id="selectDeptListByRoleId" resultType="Long">
+    <select id="selectDeptListByRoleId" resultType="Integer">
 		select d.dept_id
 		from sys_dept d
             left join sys_role_dept rd on d.dept_id = rd.dept_id
@@ -58,25 +58,25 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		order by d.parent_id, d.order_num
 	</select>
     
-    <select id="selectDeptById" parameterType="Long" resultMap="SysDeptResult">
+    <select id="selectDeptById" parameterType="Integer" resultMap="SysDeptResult">
 		<include refid="selectDeptVo"/>
 		where dept_id = #{deptId}
 	</select>
     
-    <select id="checkDeptExistUser" parameterType="Long" resultType="int">
+    <select id="checkDeptExistUser" parameterType="Integer" resultType="int">
 		select count(1) from sys_user where dept_id = #{deptId} and del_flag = '0'
 	</select>
 	
-	<select id="hasChildByDeptId" parameterType="Long" resultType="int">
+	<select id="hasChildByDeptId" parameterType="Integer" resultType="int">
 		select count(1) from sys_dept
 		where del_flag = '0' and parent_id = #{deptId} limit 1
 	</select>
 	
-	<select id="selectChildrenDeptById" parameterType="Long" resultMap="SysDeptResult">
+	<select id="selectChildrenDeptById" parameterType="Integer" resultMap="SysDeptResult">
 		select * from sys_dept where find_in_set(#{deptId}, ancestors)
 	</select>
 	
-	<select id="selectNormalChildrenDeptById" parameterType="Long" resultType="int">
+	<select id="selectNormalChildrenDeptById" parameterType="Integer" resultType="int">
 		select count(*) from sys_dept where status = 0 and del_flag = '0' and find_in_set(#{deptId}, ancestors)
 	</select>
 	
@@ -143,14 +143,14 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	    </foreach>
 	</update>
 	 
-	<update id="updateDeptStatusNormal" parameterType="Long">
+	<update id="updateDeptStatusNormal" parameterType="Integer">
  	    update sys_dept set status = '0' where dept_id in 
  	    <foreach collection="array" item="deptId" open="(" separator="," close=")">
         	#{deptId}
         </foreach>
 	</update>
 	
-	<delete id="deleteDeptById" parameterType="Long">
+	<delete id="deleteDeptById" parameterType="Integer">
 		update sys_dept set del_flag = '2' where dept_id = #{deptId}
 	</delete>
 

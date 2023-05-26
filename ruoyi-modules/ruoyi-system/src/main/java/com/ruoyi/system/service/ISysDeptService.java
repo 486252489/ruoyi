@@ -1,19 +1,19 @@
 package com.ruoyi.system.service;
 
 import java.util.List;
+
 import com.ruoyi.system.api.domain.SysDept;
 import com.ruoyi.system.domain.vo.TreeSelect;
 
 /**
  * 部门管理 服务层
- * 
+ *
  * @author ruoyi
  */
-public interface ISysDeptService
-{
+public interface ISysDeptService {
     /**
      * 查询部门管理数据
-     * 
+     *
      * @param dept 部门信息
      * @return 部门信息集合
      */
@@ -21,7 +21,7 @@ public interface ISysDeptService
 
     /**
      * 查询部门树结构信息
-     * 
+     *
      * @param dept 部门信息
      * @return 部门树信息集合
      */
@@ -29,7 +29,7 @@ public interface ISysDeptService
 
     /**
      * 构建前端所需要树结构
-     * 
+     *
      * @param depts 部门列表
      * @return 树结构列表
      */
@@ -37,7 +37,7 @@ public interface ISysDeptService
 
     /**
      * 构建前端所需要下拉树结构
-     * 
+     *
      * @param depts 部门列表
      * @return 下拉树结构列表
      */
@@ -45,47 +45,47 @@ public interface ISysDeptService
 
     /**
      * 根据角色ID查询部门树信息
-     * 
+     *
      * @param roleId 角色ID
      * @return 选中部门列表
      */
-    public List<Long> selectDeptListByRoleId(Long roleId);
+    public List<Integer> selectDeptListByRoleId(Integer roleId);
 
     /**
      * 根据部门ID查询信息
-     * 
+     *
      * @param deptId 部门ID
      * @return 部门信息
      */
-    public SysDept selectDeptById(Long deptId);
+    public SysDept selectDeptById(Integer deptId);
 
     /**
      * 根据ID查询所有子部门（正常状态）
-     * 
+     *
      * @param deptId 部门ID
      * @return 子部门数
      */
-    public int selectNormalChildrenDeptById(Long deptId);
+    public int selectNormalChildrenDeptById(Integer deptId);
 
     /**
      * 是否存在部门子节点
-     * 
+     *
      * @param deptId 部门ID
      * @return 结果
      */
-    public boolean hasChildByDeptId(Long deptId);
+    public boolean hasChildByDeptId(Integer deptId);
 
     /**
      * 查询部门是否存在用户
-     * 
+     *
      * @param deptId 部门ID
      * @return 结果 true 存在 false 不存在
      */
-    public boolean checkDeptExistUser(Long deptId);
+    public boolean checkDeptExistUser(Integer deptId);
 
     /**
      * 校验部门名称是否唯一
-     * 
+     *
      * @param dept 部门信息
      * @return 结果
      */
@@ -93,14 +93,14 @@ public interface ISysDeptService
 
     /**
      * 校验部门是否有数据权限
-     * 
+     *
      * @param deptId 部门id
      */
-    public void checkDeptDataScope(Long deptId);
+    public void checkDeptDataScope(Integer deptId);
 
     /**
      * 新增保存部门信息
-     * 
+     *
      * @param dept 部门信息
      * @return 结果
      */
@@ -108,7 +108,7 @@ public interface ISysDeptService
 
     /**
      * 修改保存部门信息
-     * 
+     *
      * @param dept 部门信息
      * @return 结果
      */
@@ -116,9 +116,9 @@ public interface ISysDeptService
 
     /**
      * 删除部门管理信息
-     * 
+     *
      * @param deptId 部门ID
      * @return 结果
      */
-    public int deleteDeptById(Long deptId);
+    public int deleteDeptById(Integer deptId);
 }

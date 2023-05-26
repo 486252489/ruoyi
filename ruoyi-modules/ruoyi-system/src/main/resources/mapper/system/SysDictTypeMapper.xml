@@ -45,7 +45,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		<include refid="selectDictTypeVo"/>
 	</select>
 	
-	<select id="selectDictTypeById" parameterType="Long" resultMap="SysDictTypeResult">
+	<select id="selectDictTypeById" parameterType="Integer" resultMap="SysDictTypeResult">
 		<include refid="selectDictTypeVo"/>
 		where dict_id = #{dictId}
 	</select>
@@ -60,11 +60,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		where dict_type = #{dictType} limit 1
 	</select>
 	
-	<delete id="deleteDictTypeById" parameterType="Long">
+	<delete id="deleteDictTypeById" parameterType="Integer">
  		delete from sys_dict_type where dict_id = #{dictId}
  	</delete>
  	
- 	<delete id="deleteDictTypeByIds" parameterType="Long">
+ 	<delete id="deleteDictTypeByIds" parameterType="Integer">
  		delete from sys_dict_type where dict_id in
  		<foreach collection="array" item="dictId" open="(" separator="," close=")">
  			#{dictId}
