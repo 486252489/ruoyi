@@ -64,8 +64,9 @@ public class SysMenuServiceImpl implements ISysMenuService {
     @Override
     public List<SysMenu> selectMenuList(SysMenu menu, Integer userId) {
         List<SysMenu> menuList = null;
+        List<SysRole> roleList = roleMapper.selectRolePermissionByUserId(userId);
         // 管理员显示所有菜单信息
-        if (SysUser.isAdmin(userId)) {
+        if (SecurityUtils.isAdmin(roleList.stream().map(SysRole::getRoleKey).collect(Collectors.toList()))) {
             menuList = menuMapper.selectMenuList(menu);
         } else {
             menu.getParams().put("userId", userId);
@@ -119,7 +120,8 @@ public class SysMenuServiceImpl implements ISysMenuService {
     @Override
     public List<SysMenu> selectMenuTreeByUserId(Integer userId) {
         List<SysMenu> menus = null;
-        if (SecurityUtils.isAdmin(userId)) {
+        List<SysRole> roleList = roleMapper.selectRolePermissionByUserId(userId);
+        if (SecurityUtils.isAdmin(roleList.stream().map(SysRole::getRoleKey).collect(Collectors.toList()))) {
             menus = menuMapper.selectMenuTreeAll();
         } else {
             menus = menuMapper.selectMenuTreeByUserId(userId);

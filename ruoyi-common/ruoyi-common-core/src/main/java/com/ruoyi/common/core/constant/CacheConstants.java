@@ -55,4 +55,9 @@ public class CacheConstants {
      * 登录IP黑名单 cache key
      */
     public static final String SYS_LOGIN_BLACKIPLIST = SYS_CONFIG_KEY + "sys.login.blackIPList";
+
+    /**
+     * 登录IP黑名单 cache key
+     */
+    public static final String SYS_ROLE_ADMIN = SYS_CONFIG_KEY + "sys.role.admin";
 }

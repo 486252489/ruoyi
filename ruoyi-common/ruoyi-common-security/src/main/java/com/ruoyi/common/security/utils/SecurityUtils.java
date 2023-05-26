@@ -2,6 +2,13 @@ package com.ruoyi.common.security.utils;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.ruoyi.common.core.constant.CacheConstants;
+import com.ruoyi.common.core.text.Convert;
+import com.ruoyi.common.core.utils.SpringUtils;
+import com.ruoyi.common.redis.service.RedisService;
+import com.ruoyi.system.api.domain.SysRole;
+import com.ruoyi.system.api.domain.SysUser;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import com.ruoyi.common.core.constant.SecurityConstants;
 import com.ruoyi.common.core.constant.TokenConstants;
@@ -10,11 +17,15 @@ import com.ruoyi.common.core.utils.ServletUtils;
 import com.ruoyi.common.core.utils.StringUtils;
 import com.ruoyi.system.api.model.LoginUser;
 
+import java.util.List;
+import java.util.Set;
+
 /**
  * 权限获取工具类
  *
  * @author ruoyi
  */
+@Slf4j
 public class SecurityUtils {
     /**
      * 获取用户ID
@@ -43,6 +54,16 @@ public class SecurityUtils {
     public static LoginUser getLoginUser() {
         return SecurityContextHolder.get(SecurityConstants.LOGIN_USER, LoginUser.class);
     }
+
+    /**
+     * 获取用户信息
+     * @return
+     */
+    public static SysUser getSysUser() {
+        return getLoginUser().getSysUser();
+    }
+
+
 
     /**
      * 获取请求token
@@ -74,11 +95,54 @@ public class SecurityUtils {
     /**
      * 是否为管理员
      *
-     * @param userId 用户ID
      * @return 结果
      */
-    public static boolean isAdmin(Integer userId) {
-        return userId != null && 1 == userId;
+    public static boolean isAdmin(Set<String> roleKeys) {
+        if(roleKeys != null && StringUtils.isNotEmpty(roleKeys)){
+            String adminRoleKey = Convert.toStr(SpringUtils.getBean(RedisService.class).getCacheObject(CacheConstants.SYS_ROLE_ADMIN));
+            return roleKeys.contains(adminRoleKey);
+        }else{
+            return false;
+        }
+    }
+
+    /**
+     * 是否为管理员
+     *
+     * @return 结果
+     */
+    public static boolean isAdmin(List<String> roleKeys) {
+        if(roleKeys != null && StringUtils.isNotEmpty(roleKeys)){
+            String adminRoleKey = Convert.toStr(SpringUtils.getBean(RedisService.class).getCacheObject(CacheConstants.SYS_ROLE_ADMIN));
+            return roleKeys.contains(adminRoleKey);
+        }else{
+            return false;
+        }
+    }
+
+    /**
+     * 是否为管理员
+     *
+     * @return 结果
+     */
+    public static boolean isAdmin() {
+        Set<String> roleKeys = SecurityUtils.getLoginUser().getRoles();
+        if(roleKeys != null && StringUtils.isNotEmpty(roleKeys)){
+            String adminRoleKey = Convert.toStr(SpringUtils.getBean(RedisService.class).getCacheObject(CacheConstants.SYS_ROLE_ADMIN));
+            return roleKeys.contains(adminRoleKey);
+        }else{
+            return false;
+        }
+    }
+    /**
+     * 是否为管理员
+     *
+     * @param roleKey 用户id
+     * @return 结果
+     */
+    public static boolean isAdmin(String roleKey) {
+        String adminRoleKey = Convert.toStr(SpringUtils.getBean(RedisService.class).getCacheObject(CacheConstants.SYS_ROLE_ADMIN));
+        return adminRoleKey.equals(roleKey);
     }
 
     /**

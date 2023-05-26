@@ -99,14 +99,4 @@ public class SysRole extends BaseEntity {
     public SysRole(Integer roleId) {
         this.roleId = roleId;
     }
-
-    public boolean isAdmin() {
-        return isAdmin(this.roleId);
-    }
-
-    public static boolean isAdmin(Integer roleId) {
-        return roleId != null && 1 == roleId;
-    }
-
-
 }

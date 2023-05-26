@@ -67,7 +67,7 @@ public class DataScopeAspect {
         if (StringUtils.isNotNull(loginUser)) {
             SysUser currentUser = loginUser.getSysUser();
             // 如果是超级管理员，则不过滤数据
-            if (StringUtils.isNotNull(currentUser) && !currentUser.isAdmin()) {
+            if (StringUtils.isNotNull(currentUser) && !SecurityUtils.isAdmin()) {
                 String permission = StringUtils.defaultIfEmpty(controllerDataScope.permission(), SecurityContextHolder.getPermission());
                 dataScopeFilter(joinPoint, currentUser, controllerDataScope.deptAlias(),
                         controllerDataScope.userAlias(), permission);

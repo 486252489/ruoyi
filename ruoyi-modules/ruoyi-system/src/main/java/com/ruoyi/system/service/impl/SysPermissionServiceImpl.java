@@ -4,6 +4,11 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import com.ruoyi.common.core.constant.CacheConstants;
+import com.ruoyi.common.core.text.Convert;
+import com.ruoyi.common.core.utils.SpringUtils;
+import com.ruoyi.common.redis.service.RedisService;
+import com.ruoyi.common.security.utils.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.ruoyi.system.api.domain.SysRole;
@@ -28,17 +33,16 @@ public class SysPermissionServiceImpl implements ISysPermissionService {
     /**
      * 获取角色数据权限
      *
-     * @param userId 用户Id
+     * @param user 用户
      * @return 角色权限信息
      */
     @Override
     public Set<String> getRolePermission(SysUser user) {
-        Set<String> roles = new HashSet<String>();
+        Set<String> roles = roleService.selectRolePermissionByUserId(user.getUserId());
         // 管理员拥有所有权限
-        if (user.isAdmin()) {
-            roles.add("admin");
-        } else {
-            roles.addAll(roleService.selectRolePermissionByUserId(user.getUserId()));
+        if (SecurityUtils.isAdmin(roles)) {
+            roles.clear();
+            roles.add(Convert.toStr(SpringUtils.getBean(RedisService.class).getCacheObject(CacheConstants.SYS_LOGIN_BLACKIPLIST)));
         }
         return roles;
     }
@@ -46,14 +50,15 @@ public class SysPermissionServiceImpl implements ISysPermissionService {
     /**
      * 获取菜单数据权限
      *
-     * @param userId 用户Id
+     * @param user 用户
      * @return 菜单权限信息
      */
     @Override
     public Set<String> getMenuPermission(SysUser user) {
         Set<String> perms = new HashSet<String>();
+        Set<String> roleKeys = roleService.selectRolePermissionByUserId(user.getUserId());
         // 管理员拥有所有权限
-        if (user.isAdmin()) {
+        if (SecurityUtils.isAdmin(roleKeys)) {
             perms.add("*:*:*");
         } else {
             List<SysRole> roles = user.getRoles();

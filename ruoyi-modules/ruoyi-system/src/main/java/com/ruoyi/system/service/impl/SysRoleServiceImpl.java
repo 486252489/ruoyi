@@ -167,7 +167,7 @@ public class SysRoleServiceImpl implements ISysRoleService {
      */
     @Override
     public void checkRoleAllowed(SysRole role) {
-        if (StringUtils.isNotNull(role.getRoleId()) && role.isAdmin()) {
+        if (StringUtils.isNotNull(role.getRoleId()) && SecurityUtils.isAdmin(role.getRoleKey())) {
             throw new ServiceException("不允许操作超级管理员角色");
         }
     }
@@ -179,7 +179,7 @@ public class SysRoleServiceImpl implements ISysRoleService {
      */
     @Override
     public void checkRoleDataScope(Integer roleId) {
-        if (!SysUser.isAdmin(SecurityUtils.getUserId())) {
+        if (!SecurityUtils.isAdmin()) {
             SysRole role = new SysRole();
             role.setRoleId(roleId);
             List<SysRole> roles = SpringUtils.getAopProxy(this).selectRoleList(role);
