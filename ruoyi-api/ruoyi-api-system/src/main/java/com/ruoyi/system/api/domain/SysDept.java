@@ -3,6 +3,8 @@ package com.ruoyi.system.api.domain;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.baomidou.mybatisplus.annotation.SqlCondition;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import lombok.Data;
 import com.ruoyi.common.core.web.domain.BaseEntity;
@@ -35,6 +37,7 @@ public class SysDept extends BaseEntity<SysDept> {
     /**
      * 部门名称
      */
+    @TableField(condition = SqlCondition.LIKE)
     private String deptName;
 
     /**
@@ -45,16 +48,19 @@ public class SysDept extends BaseEntity<SysDept> {
     /**
      * 负责人
      */
+    @TableField(condition = SqlCondition.LIKE)
     private String leader;
 
     /**
      * 联系电话
      */
+    @TableField(condition = SqlCondition.LIKE)
     private String phone;
 
     /**
      * 邮箱
      */
+    @TableField(condition = SqlCondition.LIKE)
     private String email;
 
     /**
@@ -70,10 +76,12 @@ public class SysDept extends BaseEntity<SysDept> {
     /**
      * 父部门名称
      */
+    @TableField(exist = false)
     private String parentName;
 
     /**
      * 子部门
      */
+    @TableField(exist = false)
     private List<SysDept> children = new ArrayList<SysDept>();
 }

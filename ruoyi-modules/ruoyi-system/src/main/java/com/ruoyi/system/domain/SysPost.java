@@ -1,5 +1,6 @@
 package com.ruoyi.system.domain;
 
+import com.baomidou.mybatisplus.annotation.SqlCondition;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import lombok.Data;
@@ -23,11 +24,13 @@ public class SysPost extends BaseEntity<SysPost> {
     /**
      * 岗位编码
      */
+    @TableField(condition = SqlCondition.LIKE)
     private String postCode;
 
     /**
      * 岗位名称
      */
+    @TableField(condition = SqlCondition.LIKE)
     private String postName;
 
     /**

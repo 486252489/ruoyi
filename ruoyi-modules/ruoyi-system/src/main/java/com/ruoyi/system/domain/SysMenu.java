@@ -99,6 +99,7 @@ public class SysMenu extends BaseEntity<SysMenu> {
     /**
      * 子菜单
      */
+    @TableField(exist = false)
     private List<SysMenu> children = new ArrayList<SysMenu>();
 
 }

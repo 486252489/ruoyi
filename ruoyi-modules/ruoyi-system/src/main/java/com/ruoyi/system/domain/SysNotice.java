@@ -1,5 +1,7 @@
 package com.ruoyi.system.domain;
 
+import com.baomidou.mybatisplus.annotation.SqlCondition;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import lombok.Data;
 import com.ruoyi.common.core.web.domain.BaseEntity;
@@ -22,6 +24,7 @@ public class SysNotice extends BaseEntity<SysNotice> {
     /**
      * 公告标题
      */
+    @TableField(condition = SqlCondition.LIKE)
     private String noticeTitle;
 
     /**
@@ -32,6 +35,7 @@ public class SysNotice extends BaseEntity<SysNotice> {
     /**
      * 公告内容
      */
+    @TableField(condition = SqlCondition.LIKE)
     private String noticeContent;
 
     /**

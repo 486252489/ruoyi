@@ -3,6 +3,8 @@ package com.ruoyi.system.api.domain;
 import java.util.Date;
 import java.util.List;
 
+import com.baomidou.mybatisplus.annotation.SqlCondition;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import lombok.Data;
 import com.ruoyi.common.core.web.domain.BaseEntity;
@@ -30,21 +32,25 @@ public class SysUser extends BaseEntity<SysUser> {
     /**
      * 用户账号
      */
+    @TableField(condition = SqlCondition.LIKE)
     private String userName;
 
     /**
      * 用户昵称
      */
+    @TableField(condition = SqlCondition.LIKE)
     private String nickName;
 
     /**
      * 用户邮箱
      */
+    @TableField(condition = SqlCondition.LIKE)
     private String email;
 
     /**
      * 手机号码
      */
+    @TableField(condition = SqlCondition.LIKE)
     private String phonenumber;
 
     /**
@@ -85,26 +91,31 @@ public class SysUser extends BaseEntity<SysUser> {
     /**
      * 部门对象
      */
+    @TableField(exist = false)
     private SysDept dept;
 
     /**
      * 角色对象
      */
+    @TableField(exist = false)
     private List<SysRole> roles;
 
     /**
      * 角色组
      */
+    @TableField(exist = false)
     private Integer[] roleIds;
 
     /**
      * 岗位组
      */
+    @TableField(exist = false)
     private Integer[] postIds;
 
     /**
      * 角色ID
      */
+    @TableField(exist = false)
     private Integer roleId;
 
     public SysUser() {

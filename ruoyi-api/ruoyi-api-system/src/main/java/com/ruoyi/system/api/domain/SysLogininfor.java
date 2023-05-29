@@ -2,6 +2,8 @@ package com.ruoyi.system.api.domain;
 
 import java.util.Date;
 
+import com.baomidou.mybatisplus.annotation.SqlCondition;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.ruoyi.common.core.web.domain.BaseEntity;
@@ -25,6 +27,7 @@ public class SysLogininfor extends BaseEntity<SysLogininfor> {
     /**
      * 用户账号
      */
+    @TableField(condition = SqlCondition.LIKE)
     private String userName;
 
     /**
@@ -40,6 +43,7 @@ public class SysLogininfor extends BaseEntity<SysLogininfor> {
     /**
      * 描述
      */
+    @TableField(condition = SqlCondition.LIKE)
     private String msg;
 
     /**

@@ -1,5 +1,7 @@
 package com.ruoyi.system.api.domain;
 
+import com.baomidou.mybatisplus.annotation.SqlCondition;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import lombok.Data;
 import com.ruoyi.common.core.web.domain.BaseEntity;
@@ -22,11 +24,13 @@ public class SysDictType extends BaseEntity<SysDictType> {
     /**
      * 字典名称
      */
+    @TableField(condition = SqlCondition.LIKE)
     private String dictName;
 
     /**
      * 字典类型
      */
+    @TableField(condition = SqlCondition.LIKE)
     private String dictType;
 
     /**

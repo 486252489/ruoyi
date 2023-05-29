@@ -2,6 +2,8 @@ package com.ruoyi.system.api.domain;
 
 import java.util.Set;
 
+import com.baomidou.mybatisplus.annotation.SqlCondition;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import lombok.Data;
 import com.ruoyi.common.core.web.domain.BaseEntity;
@@ -24,11 +26,13 @@ public class SysRole extends BaseEntity<SysRole> {
     /**
      * 角色名称
      */
+    @TableField(condition = SqlCondition.LIKE)
     private String roleName;
 
     /**
      * 角色权限
      */
+    @TableField(condition = SqlCondition.LIKE)
     private String roleKey;
 
     /**
@@ -64,21 +68,25 @@ public class SysRole extends BaseEntity<SysRole> {
     /**
      * 用户是否存在此角色标识 默认不存在
      */
+    @TableField(exist = false)
     private boolean flag = false;
 
     /**
      * 菜单组
      */
+    @TableField(exist = false)
     private Integer[] menuIds;
 
     /**
      * 部门组（数据权限）
      */
+    @TableField(exist = false)
     private Integer[] deptIds;
 
     /**
      * 角色菜单权限
      */
+    @TableField(exist = false)
     private Set<String> permissions;
 
     public SysRole() {

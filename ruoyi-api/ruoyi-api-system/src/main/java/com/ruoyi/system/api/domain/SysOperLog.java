@@ -2,6 +2,8 @@ package com.ruoyi.system.api.domain;
 
 import java.util.Date;
 
+import com.baomidou.mybatisplus.annotation.SqlCondition;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.ruoyi.common.core.web.domain.BaseEntity;
@@ -25,6 +27,7 @@ public class SysOperLog extends BaseEntity<SysOperLog> {
     /**
      * 操作模块
      */
+    @TableField(condition = SqlCondition.LIKE)
     private String title;
 
     /**
@@ -55,11 +58,13 @@ public class SysOperLog extends BaseEntity<SysOperLog> {
     /**
      * 操作人员
      */
+    @TableField(condition = SqlCondition.LIKE)
     private String operName;
 
     /**
      * 部门名称
      */
+    @TableField(condition = SqlCondition.LIKE)
     private String deptName;
 
     /**
