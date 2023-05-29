@@ -1,5 +1,7 @@
 package com.ruoyi.system.domain;
 
+import com.baomidou.mybatisplus.annotation.SqlCondition;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import lombok.Data;
 import com.ruoyi.common.core.web.domain.BaseEntity;
@@ -22,11 +24,13 @@ public class SysConfig extends BaseEntity<SysConfig> {
     /**
      * 参数名称
      */
+    @TableField(condition = SqlCondition.LIKE)
     private String configName;
 
     /**
      * 参数键名
      */
+    @TableField(condition = SqlCondition.LIKE)
     private String configKey;
 
     /**

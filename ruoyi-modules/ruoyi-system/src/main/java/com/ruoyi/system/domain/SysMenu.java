@@ -3,6 +3,8 @@ package com.ruoyi.system.domain;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.baomidou.mybatisplus.annotation.SqlCondition;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import lombok.Data;
 import com.ruoyi.common.core.web.domain.BaseEntity;
@@ -25,11 +27,13 @@ public class SysMenu extends BaseEntity<SysMenu> {
     /**
      * 菜单名称
      */
+    @TableField(condition = SqlCondition.LIKE)
     private String menuName;
 
     /**
      * 父菜单名称
      */
+    @TableField(condition = SqlCondition.LIKE)
     private String parentName;
 
     /**
