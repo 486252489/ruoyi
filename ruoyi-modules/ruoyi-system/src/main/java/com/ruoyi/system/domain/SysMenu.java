@@ -2,13 +2,9 @@ package com.ruoyi.system.domain;
 
 import java.util.ArrayList;
 import java.util.List;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 
+import com.baomidou.mybatisplus.annotation.TableId;
 import lombok.Data;
-import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.apache.commons.lang3.builder.ToStringStyle;
 import com.ruoyi.common.core.web.domain.BaseEntity;
 
 /**
@@ -17,12 +13,13 @@ import com.ruoyi.common.core.web.domain.BaseEntity;
  * @author ruoyi
  */
 @Data
-public class SysMenu extends BaseEntity {
+public class SysMenu extends BaseEntity<SysMenu> {
     private static final long serialVersionUID = 1L;
 
     /**
      * 菜单ID
      */
+    @TableId
     private Integer menuId;
 
     /**

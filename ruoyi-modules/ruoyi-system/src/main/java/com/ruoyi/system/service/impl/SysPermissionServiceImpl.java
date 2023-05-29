@@ -42,7 +42,7 @@ public class SysPermissionServiceImpl implements ISysPermissionService {
         // 管理员拥有所有权限
         if (SecurityUtils.isAdmin(roles)) {
             roles.clear();
-            roles.add(Convert.toStr(SpringUtils.getBean(RedisService.class).getCacheObject(CacheConstants.SYS_LOGIN_BLACKIPLIST)));
+            roles.add(Convert.toStr(SpringUtils.getBean(RedisService.class).getCacheObject(CacheConstants.SYS_ROLE_ADMIN)));
         }
         return roles;
     }

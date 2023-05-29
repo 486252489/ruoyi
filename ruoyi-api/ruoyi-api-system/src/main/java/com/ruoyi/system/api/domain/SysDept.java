@@ -2,14 +2,9 @@ package com.ruoyi.system.api.domain;
 
 import java.util.ArrayList;
 import java.util.List;
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 
+import com.baomidou.mybatisplus.annotation.TableId;
 import lombok.Data;
-import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.apache.commons.lang3.builder.ToStringStyle;
 import com.ruoyi.common.core.web.domain.BaseEntity;
 
 /**
@@ -18,12 +13,13 @@ import com.ruoyi.common.core.web.domain.BaseEntity;
  * @author ruoyi
  */
 @Data
-public class SysDept extends BaseEntity {
+public class SysDept extends BaseEntity<SysDept> {
     private static final long serialVersionUID = 1L;
 
     /**
      * 部门ID
      */
+    @TableId
     private Integer deptId;
 
     /**

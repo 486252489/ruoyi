@@ -2,6 +2,8 @@ package com.ruoyi.system.controller;
 
 import java.util.List;
 
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -37,11 +39,18 @@ public class SysNoticeController extends BaseController {
      * 获取通知公告列表
      */
     @RequiresPermissions("system:notice:list")
+    @GetMapping("/page")
+    public TableDataInfo page(SysNotice notice, Page<SysNotice> page) {
+        return getDataTable(noticeService.page(page, Wrappers.lambdaQuery(notice)));
+    }
+
+    /**
+     * 获取通知公告列表
+     */
+    @RequiresPermissions("system:notice:list")
     @GetMapping("/list")
-    public TableDataInfo list(SysNotice notice) {
-        startPage();
-        List<SysNotice> list = noticeService.selectNoticeList(notice);
-        return getDataTable(list);
+    public AjaxResult list(SysNotice notice) {
+        return success(noticeService.selectNoticeList(notice));
     }
 
     /**

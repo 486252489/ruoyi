@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.servlet.http.HttpServletResponse;
 
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -42,20 +44,15 @@ public class SysDictDataController extends BaseController {
     private ISysDictTypeService dictTypeService;
 
     @RequiresPermissions("system:dict:list")
-    @GetMapping("/list")
-    public TableDataInfo list(SysDictData dictData) {
-        startPage();
-        List<SysDictData> list = dictDataService.selectDictDataList(dictData);
-        return getDataTable(list);
+    @GetMapping("/page")
+    public TableDataInfo page(SysDictData dictData, Page<SysDictData> page) {
+        return getDataTable(dictDataService.page(page, Wrappers.lambdaQuery(dictData)));
     }
 
-    @Log(title = "字典数据", businessType = BusinessType.EXPORT)
-    @RequiresPermissions("system:dict:export")
-    @PostMapping("/export")
-    public void export(HttpServletResponse response, SysDictData dictData) {
-        List<SysDictData> list = dictDataService.selectDictDataList(dictData);
-        ExcelUtil<SysDictData> util = new ExcelUtil<SysDictData>(SysDictData.class);
-        util.exportExcel(response, list, "字典数据");
+    @RequiresPermissions("system:dict:list")
+    @GetMapping("/list")
+    public AjaxResult list(SysDictData dictData) {
+        return success(dictDataService.selectDictDataList(dictData));
     }
 
     /**

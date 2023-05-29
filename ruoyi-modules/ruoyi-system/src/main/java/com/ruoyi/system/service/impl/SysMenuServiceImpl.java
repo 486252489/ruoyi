@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.ruoyi.common.core.constant.Constants;
@@ -32,11 +33,8 @@ import com.ruoyi.system.service.ISysMenuService;
  * @author ruoyi
  */
 @Service
-public class SysMenuServiceImpl implements ISysMenuService {
+public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> implements ISysMenuService {
     public static final String PREMISSION_STRING = "perms[\"{0}\"]";
-
-    @Autowired
-    private SysMenuMapper menuMapper;
 
     @Autowired
     private SysRoleMapper roleMapper;
@@ -67,10 +65,10 @@ public class SysMenuServiceImpl implements ISysMenuService {
         List<SysRole> roleList = roleMapper.selectRolePermissionByUserId(userId);
         // 管理员显示所有菜单信息
         if (SecurityUtils.isAdmin(roleList.stream().map(SysRole::getRoleKey).collect(Collectors.toList()))) {
-            menuList = menuMapper.selectMenuList(menu);
+            menuList = baseMapper.selectMenuList(menu);
         } else {
             menu.getParams().put("userId", userId);
-            menuList = menuMapper.selectMenuListByUserId(menu);
+            menuList = baseMapper.selectMenuListByUserId(menu);
         }
         return menuList;
     }
@@ -83,7 +81,7 @@ public class SysMenuServiceImpl implements ISysMenuService {
      */
     @Override
     public Set<String> selectMenuPermsByUserId(Integer userId) {
-        List<String> perms = menuMapper.selectMenuPermsByUserId(userId);
+        List<String> perms = baseMapper.selectMenuPermsByUserId(userId);
         Set<String> permsSet = new HashSet<>();
         for (String perm : perms) {
             if (StringUtils.isNotEmpty(perm)) {
@@ -101,7 +99,7 @@ public class SysMenuServiceImpl implements ISysMenuService {
      */
     @Override
     public Set<String> selectMenuPermsByRoleId(Integer roleId) {
-        List<String> perms = menuMapper.selectMenuPermsByRoleId(roleId);
+        List<String> perms = baseMapper.selectMenuPermsByRoleId(roleId);
         Set<String> permsSet = new HashSet<>();
         for (String perm : perms) {
             if (StringUtils.isNotEmpty(perm)) {
@@ -122,9 +120,9 @@ public class SysMenuServiceImpl implements ISysMenuService {
         List<SysMenu> menus = null;
         List<SysRole> roleList = roleMapper.selectRolePermissionByUserId(userId);
         if (SecurityUtils.isAdmin(roleList.stream().map(SysRole::getRoleKey).collect(Collectors.toList()))) {
-            menus = menuMapper.selectMenuTreeAll();
+            menus = baseMapper.selectMenuTreeAll();
         } else {
-            menus = menuMapper.selectMenuTreeByUserId(userId);
+            menus = baseMapper.selectMenuTreeByUserId(userId);
         }
         return getChildPerms(menus, 0);
     }
@@ -138,7 +136,7 @@ public class SysMenuServiceImpl implements ISysMenuService {
     @Override
     public List<Integer> selectMenuListByRoleId(Integer roleId) {
         SysRole role = roleMapper.selectRoleById(roleId);
-        return menuMapper.selectMenuListByRoleId(roleId, role.isMenuCheckStrictly());
+        return baseMapper.selectMenuListByRoleId(roleId, role.isMenuCheckStrictly());
     }
 
     /**
@@ -236,7 +234,7 @@ public class SysMenuServiceImpl implements ISysMenuService {
      */
     @Override
     public SysMenu selectMenuById(Integer menuId) {
-        return menuMapper.selectMenuById(menuId);
+        return baseMapper.selectMenuById(menuId);
     }
 
     /**
@@ -247,7 +245,7 @@ public class SysMenuServiceImpl implements ISysMenuService {
      */
     @Override
     public boolean hasChildByMenuId(Integer menuId) {
-        int result = menuMapper.hasChildByMenuId(menuId);
+        int result = baseMapper.hasChildByMenuId(menuId);
         return result > 0;
     }
 
@@ -271,7 +269,7 @@ public class SysMenuServiceImpl implements ISysMenuService {
      */
     @Override
     public int insertMenu(SysMenu menu) {
-        return menuMapper.insertMenu(menu);
+        return baseMapper.insertMenu(menu);
     }
 
     /**
@@ -282,7 +280,7 @@ public class SysMenuServiceImpl implements ISysMenuService {
      */
     @Override
     public int updateMenu(SysMenu menu) {
-        return menuMapper.updateMenu(menu);
+        return baseMapper.updateMenu(menu);
     }
 
     /**
@@ -293,7 +291,7 @@ public class SysMenuServiceImpl implements ISysMenuService {
      */
     @Override
     public int deleteMenuById(Integer menuId) {
-        return menuMapper.deleteMenuById(menuId);
+        return baseMapper.deleteMenuById(menuId);
     }
 
     /**
@@ -305,7 +303,7 @@ public class SysMenuServiceImpl implements ISysMenuService {
     @Override
     public boolean checkMenuNameUnique(SysMenu menu) {
         Integer menuId = StringUtils.isNull(menu.getMenuId()) ? -1 : menu.getMenuId();
-        SysMenu info = menuMapper.checkMenuNameUnique(menu.getMenuName(), menu.getParentId());
+        SysMenu info = baseMapper.checkMenuNameUnique(menu.getMenuName(), menu.getParentId());
         if (StringUtils.isNotNull(info) && info.getMenuId().intValue() != menuId.intValue()) {
             return UserConstants.NOT_UNIQUE;
         }

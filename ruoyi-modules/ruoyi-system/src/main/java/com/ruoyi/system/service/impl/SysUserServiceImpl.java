@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import javax.validation.Validator;
 
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,11 +38,8 @@ import com.ruoyi.system.service.ISysUserService;
  * @author ruoyi
  */
 @Service
-public class SysUserServiceImpl implements ISysUserService {
+public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> implements ISysUserService {
     private static final Logger log = LoggerFactory.getLogger(SysUserServiceImpl.class);
-
-    @Autowired
-    private SysUserMapper userMapper;
 
     @Autowired
     private SysRoleMapper roleMapper;
@@ -70,7 +68,7 @@ public class SysUserServiceImpl implements ISysUserService {
     @Override
     @DataScope(deptAlias = "d", userAlias = "u")
     public List<SysUser> selectUserList(SysUser user) {
-        return userMapper.selectUserList(user);
+        return baseMapper.selectUserList(user);
     }
 
     /**
@@ -82,7 +80,7 @@ public class SysUserServiceImpl implements ISysUserService {
     @Override
     @DataScope(deptAlias = "d", userAlias = "u")
     public List<SysUser> selectAllocatedList(SysUser user) {
-        return userMapper.selectAllocatedList(user);
+        return baseMapper.selectAllocatedList(user);
     }
 
     /**
@@ -94,7 +92,7 @@ public class SysUserServiceImpl implements ISysUserService {
     @Override
     @DataScope(deptAlias = "d", userAlias = "u")
     public List<SysUser> selectUnallocatedList(SysUser user) {
-        return userMapper.selectUnallocatedList(user);
+        return baseMapper.selectUnallocatedList(user);
     }
 
     /**
@@ -105,7 +103,7 @@ public class SysUserServiceImpl implements ISysUserService {
      */
     @Override
     public SysUser selectUserByUserName(String userName) {
-        return userMapper.selectUserByUserName(userName);
+        return baseMapper.selectUserByUserName(userName);
     }
 
     /**
@@ -116,7 +114,7 @@ public class SysUserServiceImpl implements ISysUserService {
      */
     @Override
     public SysUser selectUserById(Integer userId) {
-        return userMapper.selectUserById(userId);
+        return baseMapper.selectUserById(userId);
     }
 
     /**
@@ -158,7 +156,7 @@ public class SysUserServiceImpl implements ISysUserService {
     @Override
     public boolean checkUserNameUnique(SysUser user) {
         Integer userId = StringUtils.isNull(user.getUserId()) ? -1 : user.getUserId();
-        SysUser info = userMapper.checkUserNameUnique(user.getUserName());
+        SysUser info = baseMapper.checkUserNameUnique(user.getUserName());
         if (StringUtils.isNotNull(info) && info.getUserId().intValue() != userId.intValue()) {
             return UserConstants.NOT_UNIQUE;
         }
@@ -174,7 +172,7 @@ public class SysUserServiceImpl implements ISysUserService {
     @Override
     public boolean checkPhoneUnique(SysUser user) {
         Integer userId = StringUtils.isNull(user.getUserId()) ? -1 : user.getUserId();
-        SysUser info = userMapper.checkPhoneUnique(user.getPhonenumber());
+        SysUser info = baseMapper.checkPhoneUnique(user.getPhonenumber());
         if (StringUtils.isNotNull(info) && info.getUserId().intValue() != userId.intValue()) {
             return UserConstants.NOT_UNIQUE;
         }
@@ -190,7 +188,7 @@ public class SysUserServiceImpl implements ISysUserService {
     @Override
     public boolean checkEmailUnique(SysUser user) {
         Integer userId = StringUtils.isNull(user.getUserId()) ? -1 : user.getUserId();
-        SysUser info = userMapper.checkEmailUnique(user.getEmail());
+        SysUser info = baseMapper.checkEmailUnique(user.getEmail());
         if (StringUtils.isNotNull(info) && info.getUserId().intValue() != userId.intValue()) {
             return UserConstants.NOT_UNIQUE;
         }
@@ -236,7 +234,7 @@ public class SysUserServiceImpl implements ISysUserService {
     @Transactional(rollbackFor = Exception.class)
     public int insertUser(SysUser user) {
         // 新增用户信息
-        int rows = userMapper.insertUser(user);
+        int rows = baseMapper.insertUser(user);
         // 新增用户岗位关联
         insertUserPost(user);
         // 新增用户与角色管理
@@ -252,7 +250,7 @@ public class SysUserServiceImpl implements ISysUserService {
      */
     @Override
     public boolean registerUser(SysUser user) {
-        return userMapper.insertUser(user) > 0;
+        return baseMapper.insertUser(user) > 0;
     }
 
     /**
@@ -273,7 +271,7 @@ public class SysUserServiceImpl implements ISysUserService {
         userPostMapper.deleteUserPostByUserId(userId);
         // 新增用户与岗位管理
         insertUserPost(user);
-        return userMapper.updateUser(user);
+        return baseMapper.updateUser(user);
     }
 
     /**
@@ -297,7 +295,7 @@ public class SysUserServiceImpl implements ISysUserService {
      */
     @Override
     public int updateUserStatus(SysUser user) {
-        return userMapper.updateUser(user);
+        return baseMapper.updateUser(user);
     }
 
     /**
@@ -308,7 +306,7 @@ public class SysUserServiceImpl implements ISysUserService {
      */
     @Override
     public int updateUserProfile(SysUser user) {
-        return userMapper.updateUser(user);
+        return baseMapper.updateUser(user);
     }
 
     /**
@@ -320,7 +318,7 @@ public class SysUserServiceImpl implements ISysUserService {
      */
     @Override
     public boolean updateUserAvatar(String userName, String avatar) {
-        return userMapper.updateUserAvatar(userName, avatar) > 0;
+        return baseMapper.updateUserAvatar(userName, avatar) > 0;
     }
 
     /**
@@ -331,7 +329,7 @@ public class SysUserServiceImpl implements ISysUserService {
      */
     @Override
     public int resetPwd(SysUser user) {
-        return userMapper.updateUser(user);
+        return baseMapper.updateUser(user);
     }
 
     /**
@@ -343,7 +341,7 @@ public class SysUserServiceImpl implements ISysUserService {
      */
     @Override
     public int resetUserPwd(String userName, String password) {
-        return userMapper.resetUserPwd(userName, password);
+        return baseMapper.resetUserPwd(userName, password);
     }
 
     /**
@@ -408,7 +406,7 @@ public class SysUserServiceImpl implements ISysUserService {
         userRoleMapper.deleteUserRoleByUserId(userId);
         // 删除用户与岗位表
         userPostMapper.deleteUserPostByUserId(userId);
-        return userMapper.deleteUserById(userId);
+        return baseMapper.deleteUserById(userId);
     }
 
     /**
@@ -428,7 +426,7 @@ public class SysUserServiceImpl implements ISysUserService {
         userRoleMapper.deleteUserRole(userIds);
         // 删除用户与岗位关联
         userPostMapper.deleteUserPost(userIds);
-        return userMapper.deleteUserByIds(userIds);
+        return baseMapper.deleteUserByIds(userIds);
     }
 
     /**
@@ -452,12 +450,12 @@ public class SysUserServiceImpl implements ISysUserService {
         for (SysUser user : userList) {
             try {
                 // 验证是否存在这个用户
-                SysUser u = userMapper.selectUserByUserName(user.getUserName());
+                SysUser u = baseMapper.selectUserByUserName(user.getUserName());
                 if (StringUtils.isNull(u)) {
                     BeanValidators.validateWithException(validator, user);
                     user.setPassword(SecurityUtils.encryptPassword(password));
                     user.setCreateBy(operName);
-                    userMapper.insertUser(user);
+                    baseMapper.insertUser(user);
                     successNum++;
                     successMsg.append("<br/>" + successNum + "、账号 " + user.getUserName() + " 导入成功");
                 } else if (isUpdateSupport) {
@@ -466,7 +464,7 @@ public class SysUserServiceImpl implements ISysUserService {
                     checkUserDataScope(u.getUserId());
                     user.setUserId(u.getUserId());
                     user.setUpdateBy(operName);
-                    userMapper.updateUser(user);
+                    baseMapper.updateUser(user);
                     successNum++;
                     successMsg.append("<br/>" + successNum + "、账号 " + user.getUserName() + " 更新成功");
                 } else {

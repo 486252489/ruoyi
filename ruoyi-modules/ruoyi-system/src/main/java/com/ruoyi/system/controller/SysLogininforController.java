@@ -3,6 +3,8 @@ package com.ruoyi.system.controller;
 import java.util.List;
 import javax.servlet.http.HttpServletResponse;
 
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -39,20 +41,15 @@ public class SysLogininforController extends BaseController {
     private RedisService redisService;
 
     @RequiresPermissions("system:logininfor:list")
-    @GetMapping("/list")
-    public TableDataInfo list(SysLogininfor logininfor) {
-        startPage();
-        List<SysLogininfor> list = logininforService.selectLogininforList(logininfor);
-        return getDataTable(list);
+    @GetMapping("/page")
+    public TableDataInfo page(SysLogininfor logininfor, Page<SysLogininfor> page) {
+        return getDataTable(logininforService.page(page, Wrappers.lambdaQuery(logininfor)));
     }
 
-    @Log(title = "登录日志", businessType = BusinessType.EXPORT)
-    @RequiresPermissions("system:logininfor:export")
-    @PostMapping("/export")
-    public void export(HttpServletResponse response, SysLogininfor logininfor) {
-        List<SysLogininfor> list = logininforService.selectLogininforList(logininfor);
-        ExcelUtil<SysLogininfor> util = new ExcelUtil<SysLogininfor>(SysLogininfor.class);
-        util.exportExcel(response, list, "登录日志");
+    @RequiresPermissions("system:logininfor:list")
+    @GetMapping("/list")
+    public AjaxResult list(SysLogininfor logininfor) {
+        return success(logininforService.selectLogininforList(logininfor));
     }
 
     @RequiresPermissions("system:logininfor:remove")

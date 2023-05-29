@@ -52,18 +52,6 @@ public class SysJobController extends BaseController {
     }
 
     /**
-     * 导出定时任务列表
-     */
-    @RequiresPermissions("monitor:job:export")
-    @Log(title = "定时任务", businessType = BusinessType.EXPORT)
-    @PostMapping("/export")
-    public void export(HttpServletResponse response, SysJob sysJob) {
-        List<SysJob> list = jobService.selectJobList(sysJob);
-        ExcelUtil<SysJob> util = new ExcelUtil<SysJob>(SysJob.class);
-        util.exportExcel(response, list, "定时任务");
-    }
-
-    /**
      * 获取定时任务详细信息
      */
     @RequiresPermissions("monitor:job:query")

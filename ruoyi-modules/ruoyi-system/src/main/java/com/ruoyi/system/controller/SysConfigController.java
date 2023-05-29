@@ -3,6 +3,8 @@ package com.ruoyi.system.controller;
 import java.util.List;
 import javax.servlet.http.HttpServletResponse;
 
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -39,20 +41,18 @@ public class SysConfigController extends BaseController {
      * 获取参数配置列表
      */
     @RequiresPermissions("system:config:list")
-    @GetMapping("/list")
-    public TableDataInfo list(SysConfig config) {
-        startPage();
-        List<SysConfig> list = configService.selectConfigList(config);
-        return getDataTable(list);
+    @GetMapping("/page")
+    public TableDataInfo page(SysConfig config,Page<SysConfig> page) {
+        return getDataTable(configService.page(page, Wrappers.lambdaQuery(config)));
     }
 
-    @Log(title = "参数管理", businessType = BusinessType.EXPORT)
-    @RequiresPermissions("system:config:export")
-    @PostMapping("/export")
-    public void export(HttpServletResponse response, SysConfig config) {
-        List<SysConfig> list = configService.selectConfigList(config);
-        ExcelUtil<SysConfig> util = new ExcelUtil<SysConfig>(SysConfig.class);
-        util.exportExcel(response, list, "参数数据");
+    /**
+     * 获取参数配置列表
+     */
+    @RequiresPermissions("system:config:list")
+    @GetMapping("/list")
+    public AjaxResult list(SysConfig config) {
+        return success(configService.selectConfigList(config));
     }
 
     /**

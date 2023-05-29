@@ -3,6 +3,8 @@ package com.ruoyi.system.controller;
 import java.util.List;
 import javax.servlet.http.HttpServletResponse;
 
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -36,20 +38,15 @@ public class SysDictTypeController extends BaseController {
     private ISysDictTypeService dictTypeService;
 
     @RequiresPermissions("system:dict:list")
-    @GetMapping("/list")
-    public TableDataInfo list(SysDictType dictType) {
-        startPage();
-        List<SysDictType> list = dictTypeService.selectDictTypeList(dictType);
-        return getDataTable(list);
+    @GetMapping("/page")
+    public TableDataInfo page(SysDictType dictType, Page<SysDictType> page) {
+        return getDataTable(dictTypeService.page(page, Wrappers.lambdaQuery(dictType)));
     }
 
-    @Log(title = "字典类型", businessType = BusinessType.EXPORT)
-    @RequiresPermissions("system:dict:export")
-    @PostMapping("/export")
-    public void export(HttpServletResponse response, SysDictType dictType) {
-        List<SysDictType> list = dictTypeService.selectDictTypeList(dictType);
-        ExcelUtil<SysDictType> util = new ExcelUtil<SysDictType>(SysDictType.class);
-        util.exportExcel(response, list, "字典类型");
+    @RequiresPermissions("system:dict:list")
+    @GetMapping("/list")
+    public AjaxResult list(SysDictType dictType) {
+        return success(dictTypeService.selectDictTypeList(dictType));
     }
 
     /**

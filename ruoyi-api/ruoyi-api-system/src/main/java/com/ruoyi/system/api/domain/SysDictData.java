@@ -1,14 +1,7 @@
 package com.ruoyi.system.api.domain;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Size;
-
+import com.baomidou.mybatisplus.annotation.TableId;
 import lombok.Data;
-import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.apache.commons.lang3.builder.ToStringStyle;
-import com.ruoyi.common.core.annotation.Excel;
-import com.ruoyi.common.core.annotation.Excel.ColumnType;
-import com.ruoyi.common.core.constant.UserConstants;
 import com.ruoyi.common.core.web.domain.BaseEntity;
 
 /**
@@ -17,37 +10,33 @@ import com.ruoyi.common.core.web.domain.BaseEntity;
  * @author ruoyi
  */
 @Data
-public class SysDictData extends BaseEntity {
+public class SysDictData extends BaseEntity<SysDept> {
     private static final long serialVersionUID = 1L;
 
     /**
      * 字典编码
      */
-    @Excel(name = "字典编码", cellType = ColumnType.NUMERIC)
+    @TableId
     private Integer dictCode;
 
     /**
      * 字典排序
      */
-    @Excel(name = "字典排序", cellType = ColumnType.NUMERIC)
     private Integer dictSort;
 
     /**
      * 字典标签
      */
-    @Excel(name = "字典标签")
     private String dictLabel;
 
     /**
      * 字典键值
      */
-    @Excel(name = "字典键值")
     private String dictValue;
 
     /**
      * 字典类型
      */
-    @Excel(name = "字典类型")
     private String dictType;
 
     /**
@@ -63,12 +52,10 @@ public class SysDictData extends BaseEntity {
     /**
      * 是否默认（Y是 N否）
      */
-    @Excel(name = "是否默认", readConverterExp = "Y=是,N=否")
     private String isDefault;
 
     /**
      * 状态（0正常 1停用）
      */
-    @Excel(name = "状态", readConverterExp = "0=正常,1=停用")
     private String status;
 }

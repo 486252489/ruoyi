@@ -2,6 +2,7 @@ package com.ruoyi.system.service.impl;
 
 import java.util.List;
 
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.ruoyi.system.domain.SysNotice;
@@ -14,9 +15,7 @@ import com.ruoyi.system.service.ISysNoticeService;
  * @author ruoyi
  */
 @Service
-public class SysNoticeServiceImpl implements ISysNoticeService {
-    @Autowired
-    private SysNoticeMapper noticeMapper;
+public class SysNoticeServiceImpl extends ServiceImpl<SysNoticeMapper, SysNotice> implements ISysNoticeService {
 
     /**
      * 查询公告信息
@@ -26,7 +25,7 @@ public class SysNoticeServiceImpl implements ISysNoticeService {
      */
     @Override
     public SysNotice selectNoticeById(Integer noticeId) {
-        return noticeMapper.selectNoticeById(noticeId);
+        return baseMapper.selectNoticeById(noticeId);
     }
 
     /**
@@ -37,7 +36,7 @@ public class SysNoticeServiceImpl implements ISysNoticeService {
      */
     @Override
     public List<SysNotice> selectNoticeList(SysNotice notice) {
-        return noticeMapper.selectNoticeList(notice);
+        return baseMapper.selectNoticeList(notice);
     }
 
     /**
@@ -48,7 +47,7 @@ public class SysNoticeServiceImpl implements ISysNoticeService {
      */
     @Override
     public int insertNotice(SysNotice notice) {
-        return noticeMapper.insertNotice(notice);
+        return baseMapper.insertNotice(notice);
     }
 
     /**
@@ -59,7 +58,7 @@ public class SysNoticeServiceImpl implements ISysNoticeService {
      */
     @Override
     public int updateNotice(SysNotice notice) {
-        return noticeMapper.updateNotice(notice);
+        return baseMapper.updateNotice(notice);
     }
 
     /**
@@ -70,7 +69,7 @@ public class SysNoticeServiceImpl implements ISysNoticeService {
      */
     @Override
     public int deleteNoticeById(Integer noticeId) {
-        return noticeMapper.deleteNoticeById(noticeId);
+        return baseMapper.deleteNoticeById(noticeId);
     }
 
     /**
@@ -81,6 +80,6 @@ public class SysNoticeServiceImpl implements ISysNoticeService {
      */
     @Override
     public int deleteNoticeByIds(Integer[] noticeIds) {
-        return noticeMapper.deleteNoticeByIds(noticeIds);
+        return baseMapper.deleteNoticeByIds(noticeIds);
     }
 }

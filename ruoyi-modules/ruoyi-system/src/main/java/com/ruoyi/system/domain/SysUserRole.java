@@ -1,8 +1,7 @@
 package com.ruoyi.system.domain;
 
+import com.baomidou.mybatisplus.extension.activerecord.Model;
 import lombok.Data;
-import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.apache.commons.lang3.builder.ToStringStyle;
 
 /**
  * 用户和角色关联 sys_user_role
@@ -10,7 +9,7 @@ import org.apache.commons.lang3.builder.ToStringStyle;
  * @author ruoyi
  */
 @Data
-public class SysUserRole {
+public class SysUserRole extends Model<SysUserRole> {
     /**
      * 用户ID
      */

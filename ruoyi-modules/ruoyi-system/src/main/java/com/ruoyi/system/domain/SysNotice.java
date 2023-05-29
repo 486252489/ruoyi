@@ -1,13 +1,8 @@
 package com.ruoyi.system.domain;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Size;
-
+import com.baomidou.mybatisplus.annotation.TableId;
 import lombok.Data;
-import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.apache.commons.lang3.builder.ToStringStyle;
 import com.ruoyi.common.core.web.domain.BaseEntity;
-import com.ruoyi.common.core.xss.Xss;
 
 /**
  * 通知公告表 sys_notice
@@ -15,12 +10,13 @@ import com.ruoyi.common.core.xss.Xss;
  * @author ruoyi
  */
 @Data
-public class SysNotice extends BaseEntity {
+public class SysNotice extends BaseEntity<SysNotice> {
     private static final long serialVersionUID = 1L;
 
     /**
      * 公告ID
      */
+    @TableId
     private Integer noticeId;
 
     /**

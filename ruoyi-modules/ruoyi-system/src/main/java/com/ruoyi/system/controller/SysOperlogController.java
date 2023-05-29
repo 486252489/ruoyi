@@ -3,6 +3,8 @@ package com.ruoyi.system.controller;
 import java.util.List;
 import javax.servlet.http.HttpServletResponse;
 
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -34,20 +36,15 @@ public class SysOperlogController extends BaseController {
     private ISysOperLogService operLogService;
 
     @RequiresPermissions("system:operlog:list")
-    @GetMapping("/list")
-    public TableDataInfo list(SysOperLog operLog) {
-        startPage();
-        List<SysOperLog> list = operLogService.selectOperLogList(operLog);
-        return getDataTable(list);
+    @GetMapping("/page")
+    public TableDataInfo page(SysOperLog operLog, Page<SysOperLog> page) {
+        return getDataTable(operLogService.page(page, Wrappers.lambdaQuery(operLog)));
     }
 
-    @Log(title = "操作日志", businessType = BusinessType.EXPORT)
-    @RequiresPermissions("system:operlog:export")
-    @PostMapping("/export")
-    public void export(HttpServletResponse response, SysOperLog operLog) {
-        List<SysOperLog> list = operLogService.selectOperLogList(operLog);
-        ExcelUtil<SysOperLog> util = new ExcelUtil<SysOperLog>(SysOperLog.class);
-        util.exportExcel(response, list, "操作日志");
+    @RequiresPermissions("system:operlog:list")
+    @GetMapping("/list")
+    public AjaxResult list(SysOperLog operLog) {
+        return success(operLogService.selectOperLogList(operLog));
     }
 
     @Log(title = "操作日志", businessType = BusinessType.DELETE)

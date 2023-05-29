@@ -5,6 +5,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.ruoyi.common.core.web.page.TableDataInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -40,18 +41,18 @@ public class SysPostController extends BaseController {
      * 获取岗位列表
      */
     @RequiresPermissions("system:post:list")
-    @GetMapping("/list")
-    public AjaxResult list(SysPost post, Page page) {
-        return AjaxResult.success(postService.page(page, Wrappers.lambdaQuery(post)));
+    @GetMapping("/page")
+    public TableDataInfo page(SysPost post, Page page) {
+        return getDataTable(postService.page(page, Wrappers.lambdaQuery(post)));
     }
 
-    @Log(title = "岗位管理", businessType = BusinessType.EXPORT)
-    @RequiresPermissions("system:post:export")
-    @PostMapping("/export")
-    public void export(HttpServletResponse response, SysPost post) {
-        List<SysPost> list = postService.selectPostList(post);
-        ExcelUtil<SysPost> util = new ExcelUtil<SysPost>(SysPost.class);
-        util.exportExcel(response, list, "岗位数据");
+    /**
+     * 获取岗位列表
+     */
+    @RequiresPermissions("system:post:list")
+    @GetMapping("/list")
+    public AjaxResult list(SysPost post) {
+        return success(postService.selectPostList(post));
     }
 
     /**

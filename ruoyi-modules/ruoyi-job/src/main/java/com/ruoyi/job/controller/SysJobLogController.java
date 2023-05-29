@@ -43,18 +43,6 @@ public class SysJobLogController extends BaseController {
     }
 
     /**
-     * 导出定时任务调度日志列表
-     */
-    @RequiresPermissions("monitor:job:export")
-    @Log(title = "任务调度日志", businessType = BusinessType.EXPORT)
-    @PostMapping("/export")
-    public void export(HttpServletResponse response, SysJobLog sysJobLog) {
-        List<SysJobLog> list = jobLogService.selectJobLogList(sysJobLog);
-        ExcelUtil<SysJobLog> util = new ExcelUtil<SysJobLog>(SysJobLog.class);
-        util.exportExcel(response, list, "调度日志");
-    }
-
-    /**
      * 根据调度编号获取详细信息
      */
     @RequiresPermissions("monitor:job:query")

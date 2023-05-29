@@ -3,6 +3,8 @@ package com.ruoyi.system.controller;
 import java.util.List;
 import javax.servlet.http.HttpServletResponse;
 
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -47,20 +49,15 @@ public class SysRoleController extends BaseController {
     private ISysDeptService deptService;
 
     @RequiresPermissions("system:role:list")
-    @GetMapping("/list")
-    public TableDataInfo list(SysRole role) {
-        startPage();
-        List<SysRole> list = roleService.selectRoleList(role);
-        return getDataTable(list);
+    @GetMapping("/page")
+    public TableDataInfo page(SysRole role, Page<SysRole> page) {
+        return getDataTable(roleService.page(page, Wrappers.lambdaQuery(role)));
     }
 
-    @Log(title = "角色管理", businessType = BusinessType.EXPORT)
-    @RequiresPermissions("system:role:export")
-    @PostMapping("/export")
-    public void export(HttpServletResponse response, SysRole role) {
-        List<SysRole> list = roleService.selectRoleList(role);
-        ExcelUtil<SysRole> util = new ExcelUtil<SysRole>(SysRole.class);
-        util.exportExcel(response, list, "角色数据");
+    @RequiresPermissions("system:role:list")
+    @GetMapping("/list")
+    public AjaxResult list(SysRole role) {
+        return success(roleService.selectRoleList(role));
     }
 
     /**

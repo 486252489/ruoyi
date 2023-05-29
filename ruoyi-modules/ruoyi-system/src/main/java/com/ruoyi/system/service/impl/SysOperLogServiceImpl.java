@@ -2,6 +2,7 @@ package com.ruoyi.system.service.impl;
 
 import java.util.List;
 
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.ruoyi.system.api.domain.SysOperLog;
@@ -14,9 +15,7 @@ import com.ruoyi.system.service.ISysOperLogService;
  * @author ruoyi
  */
 @Service
-public class SysOperLogServiceImpl implements ISysOperLogService {
-    @Autowired
-    private SysOperLogMapper operLogMapper;
+public class SysOperLogServiceImpl extends ServiceImpl<SysOperLogMapper, SysOperLog> implements ISysOperLogService {
 
     /**
      * 新增操作日志
@@ -26,7 +25,7 @@ public class SysOperLogServiceImpl implements ISysOperLogService {
      */
     @Override
     public int insertOperlog(SysOperLog operLog) {
-        return operLogMapper.insertOperlog(operLog);
+        return baseMapper.insertOperlog(operLog);
     }
 
     /**
@@ -37,7 +36,7 @@ public class SysOperLogServiceImpl implements ISysOperLogService {
      */
     @Override
     public List<SysOperLog> selectOperLogList(SysOperLog operLog) {
-        return operLogMapper.selectOperLogList(operLog);
+        return baseMapper.selectOperLogList(operLog);
     }
 
     /**
@@ -48,7 +47,7 @@ public class SysOperLogServiceImpl implements ISysOperLogService {
      */
     @Override
     public int deleteOperLogByIds(Integer[] operIds) {
-        return operLogMapper.deleteOperLogByIds(operIds);
+        return baseMapper.deleteOperLogByIds(operIds);
     }
 
     /**
@@ -59,7 +58,7 @@ public class SysOperLogServiceImpl implements ISysOperLogService {
      */
     @Override
     public SysOperLog selectOperLogById(Integer operId) {
-        return operLogMapper.selectOperLogById(operId);
+        return baseMapper.selectOperLogById(operId);
     }
 
     /**
@@ -67,6 +66,6 @@ public class SysOperLogServiceImpl implements ISysOperLogService {
      */
     @Override
     public void cleanOperLog() {
-        operLogMapper.cleanOperLog();
+        baseMapper.cleanOperLog();
     }
 }

@@ -1,9 +1,8 @@
 package com.ruoyi.system.domain;
 
 import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
 import lombok.Data;
-import com.ruoyi.common.core.annotation.Excel;
-import com.ruoyi.common.core.annotation.Excel.ColumnType;
 import com.ruoyi.common.core.web.domain.BaseEntity;
 
 /**
@@ -18,31 +17,27 @@ public class SysPost extends BaseEntity<SysPost> {
     /**
      * 岗位序号
      */
-    @Excel(name = "岗位序号", cellType = ColumnType.NUMERIC)
+    @TableId
     private Integer postId;
 
     /**
      * 岗位编码
      */
-    @Excel(name = "岗位编码")
     private String postCode;
 
     /**
      * 岗位名称
      */
-    @Excel(name = "岗位名称")
     private String postName;
 
     /**
      * 岗位排序
      */
-    @Excel(name = "岗位排序")
     private Integer postSort;
 
     /**
      * 状态（0正常 1停用）
      */
-    @Excel(name = "状态", readConverterExp = "0=正常,1=停用")
     private String status;
 
     /**
