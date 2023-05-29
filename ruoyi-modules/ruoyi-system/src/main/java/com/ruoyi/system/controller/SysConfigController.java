@@ -52,7 +52,7 @@ public class SysConfigController extends BaseController {
     @RequiresPermissions("system:config:list")
     @GetMapping("/list")
     public AjaxResult list(SysConfig config) {
-        return success(configService.selectConfigList(config));
+        return success(configService.list(Wrappers.lambdaQuery(config)));
     }
 
     /**
@@ -60,7 +60,7 @@ public class SysConfigController extends BaseController {
      */
     @GetMapping(value = "/{configId}")
     public AjaxResult getInfo(@PathVariable Integer configId) {
-        return success(configService.selectConfigById(configId));
+        return success(configService.getById(configId));
     }
 
     /**
@@ -81,7 +81,6 @@ public class SysConfigController extends BaseController {
         if (!configService.checkConfigKeyUnique(config)) {
             return error("新增参数'" + config.getConfigName() + "'失败，参数键名已存在");
         }
-        config.setCreateBy(SecurityUtils.getUsername());
         return toAjax(configService.insertConfig(config));
     }
 
@@ -95,7 +94,6 @@ public class SysConfigController extends BaseController {
         if (!configService.checkConfigKeyUnique(config)) {
             return error("修改参数'" + config.getConfigName() + "'失败，参数键名已存在");
         }
-        config.setUpdateBy(SecurityUtils.getUsername());
         return toAjax(configService.updateConfig(config));
     }
 

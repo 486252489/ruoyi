@@ -11,13 +11,6 @@ import com.ruoyi.system.domain.SysConfig;
  * @author ruoyi
  */
 public interface ISysConfigService extends IService<SysConfig> {
-    /**
-     * 查询参数配置信息
-     *
-     * @param configId 参数配置ID
-     * @return 参数配置信息
-     */
-    public SysConfig selectConfigById(Integer configId);
 
     /**
      * 根据键名查询参数配置信息
@@ -26,14 +19,6 @@ public interface ISysConfigService extends IService<SysConfig> {
      * @return 参数键值
      */
     public String selectConfigByKey(String configKey);
-
-    /**
-     * 查询参数配置列表
-     *
-     * @param config 参数配置信息
-     * @return 参数配置集合
-     */
-    public List<SysConfig> selectConfigList(SysConfig config);
 
     /**
      * 新增参数配置

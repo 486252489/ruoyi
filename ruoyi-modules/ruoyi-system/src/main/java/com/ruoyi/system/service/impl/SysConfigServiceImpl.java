@@ -38,19 +38,6 @@ public class SysConfigServiceImpl extends ServiceImpl<SysConfigMapper, SysConfig
     }
 
     /**
-     * 查询参数配置信息
-     *
-     * @param configId 参数配置ID
-     * @return 参数配置信息
-     */
-    @Override
-    public SysConfig selectConfigById(Integer configId) {
-        SysConfig config = new SysConfig();
-        config.setConfigId(configId);
-        return baseMapper.selectConfig(config);
-    }
-
-    /**
      * 根据键名查询参数配置信息
      *
      * @param configKey 参数key
@@ -62,9 +49,7 @@ public class SysConfigServiceImpl extends ServiceImpl<SysConfigMapper, SysConfig
         if (StringUtils.isNotEmpty(configValue)) {
             return configValue;
         }
-        SysConfig config = new SysConfig();
-        config.setConfigKey(configKey);
-        SysConfig retConfig = baseMapper.selectConfig(config);
+        SysConfig retConfig = baseMapper.selectOne(Wrappers.<SysConfig>lambdaQuery().eq(SysConfig::getConfigKey, configKey).last("limit 1"));
         if (StringUtils.isNotNull(retConfig)) {
             redisService.setCacheObject(getCacheKey(configKey), retConfig.getConfigValue());
             return retConfig.getConfigValue();
@@ -72,16 +57,7 @@ public class SysConfigServiceImpl extends ServiceImpl<SysConfigMapper, SysConfig
         return StringUtils.EMPTY;
     }
 
-    /**
-     * 查询参数配置列表
-     *
-     * @param config 参数配置信息
-     * @return 参数配置集合
-     */
-    @Override
-    public List<SysConfig> selectConfigList(SysConfig config) {
-        return baseMapper.selectConfigList(config);
-    }
+
 
     /**
      * 新增参数配置
@@ -127,7 +103,7 @@ public class SysConfigServiceImpl extends ServiceImpl<SysConfigMapper, SysConfig
     public void deleteConfigByIds(Integer[] configIds) {
         super.removeByIds(Arrays.asList(configIds));
         for (Integer configId : configIds) {
-            SysConfig config = selectConfigById(configId);
+            SysConfig config = super.getById(configId);
             if (StringUtils.equals(UserConstants.YES, config.getConfigType())) {
                 throw new ServiceException(String.format("内置参数【%1$s】不能删除 ", config.getConfigKey()));
             }
@@ -140,7 +116,7 @@ public class SysConfigServiceImpl extends ServiceImpl<SysConfigMapper, SysConfig
      */
     @Override
     public void loadingConfigCache() {
-        List<SysConfig> configsList = baseMapper.selectConfigList(new SysConfig());
+        List<SysConfig> configsList = super.list();
         for (SysConfig config : configsList) {
             redisService.setCacheObject(getCacheKey(config.getConfigKey()), config.getConfigValue());
         }
