@@ -2,6 +2,9 @@ package com.ruoyi.system.controller;
 
 import java.util.List;
 
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.ruoyi.system.api.domain.SysUser;
+import com.ruoyi.system.service.ISysUserService;
 import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
@@ -34,6 +37,8 @@ import com.ruoyi.system.service.ISysDeptService;
 public class SysDeptController extends BaseController {
     @Autowired
     private ISysDeptService deptService;
+    @Autowired
+    private ISysUserService userService;
 
     /**
      * 获取部门列表
@@ -63,7 +68,7 @@ public class SysDeptController extends BaseController {
     @GetMapping(value = "/{deptId}")
     public AjaxResult getInfo(@PathVariable Integer deptId) {
         deptService.checkDeptDataScope(deptId);
-        return success(deptService.selectDeptById(deptId));
+        return success(deptService.getById(deptId));
     }
 
     /**
@@ -107,13 +112,15 @@ public class SysDeptController extends BaseController {
     @Log(title = "部门管理", businessType = BusinessType.DELETE)
     @DeleteMapping("/{deptId}")
     public AjaxResult remove(@PathVariable Integer deptId) {
-        if (deptService.hasChildByDeptId(deptId)) {
+        Long deptCount = deptService.count(Wrappers.<SysDept>lambdaQuery().eq(SysDept::getParentId, deptId));
+        if (deptCount.intValue() > 0) {
             return warn("存在下级部门,不允许删除");
         }
-        if (deptService.checkDeptExistUser(deptId)) {
+        Long userCount = userService.count(Wrappers.<SysUser>lambdaQuery().eq(SysUser::getDeptId, deptId));
+        if (userCount.intValue() > 0) {
             return warn("部门存在用户,不允许删除");
         }
         deptService.checkDeptDataScope(deptId);
-        return toAjax(deptService.deleteDeptById(deptId));
+        return toAjax(deptService.removeById(deptId));
     }
 }
