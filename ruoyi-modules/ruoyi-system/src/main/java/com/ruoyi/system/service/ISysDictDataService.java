@@ -29,14 +29,6 @@ public interface ISysDictDataService extends IService<SysDictData> {
     public String selectDictLabel(String dictType, String dictValue);
 
     /**
-     * 根据字典数据ID查询信息
-     *
-     * @param dictCode 字典数据ID
-     * @return 字典数据
-     */
-    public SysDictData selectDictDataById(Integer dictCode);
-
-    /**
      * 批量删除字典数据信息
      *
      * @param dictCodes 需要删除的字典数据ID
@@ -58,4 +50,12 @@ public interface ISysDictDataService extends IService<SysDictData> {
      * @return 结果
      */
     public int updateDictData(SysDictData dictData);
+
+    /**
+     * 根据字典类型查询字典数据
+     *
+     * @param dictType 字典类型
+     * @return 字典数据集合信息
+     */
+    List<SysDictData> selectDictDataByType(String dictType);
 }

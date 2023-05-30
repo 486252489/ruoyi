@@ -2,6 +2,7 @@ package com.ruoyi.system.service.impl;
 
 import java.util.List;
 
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -26,7 +27,7 @@ public class SysDictDataServiceImpl extends ServiceImpl<SysDictDataMapper, SysDi
      */
     @Override
     public List<SysDictData> selectDictDataList(SysDictData dictData) {
-        return baseMapper.selectDictDataList(dictData);
+        return super.list(Wrappers.lambdaQuery(dictData).orderByAsc(SysDictData::getDictSort));
     }
 
     /**
@@ -38,18 +39,8 @@ public class SysDictDataServiceImpl extends ServiceImpl<SysDictDataMapper, SysDi
      */
     @Override
     public String selectDictLabel(String dictType, String dictValue) {
-        return baseMapper.selectDictLabel(dictType, dictValue);
-    }
-
-    /**
-     * 根据字典数据ID查询信息
-     *
-     * @param dictCode 字典数据ID
-     * @return 字典数据
-     */
-    @Override
-    public SysDictData selectDictDataById(Integer dictCode) {
-        return baseMapper.selectDictDataById(dictCode);
+        SysDictData sysDictData = super.getOne(Wrappers.<SysDictData>lambdaQuery().select(SysDictData::getDictLabel).eq(SysDictData::getDictType, dictType).eq(SysDictData::getDictValue, dictValue));
+        return sysDictData != null ? sysDictData.getDictLabel() : null;
     }
 
     /**
@@ -60,9 +51,9 @@ public class SysDictDataServiceImpl extends ServiceImpl<SysDictDataMapper, SysDi
     @Override
     public void deleteDictDataByIds(Integer[] dictCodes) {
         for (Integer dictCode : dictCodes) {
-            SysDictData data = selectDictDataById(dictCode);
-            baseMapper.deleteDictDataById(dictCode);
-            List<SysDictData> dictDatas = baseMapper.selectDictDataByType(data.getDictType());
+            SysDictData data = super.getById(dictCode);
+            super.removeById(dictCode);
+            List<SysDictData> dictDatas = this.selectDictDataByType(data.getDictType());
             DictUtils.setDictCache(data.getDictType(), dictDatas);
         }
     }
@@ -75,9 +66,9 @@ public class SysDictDataServiceImpl extends ServiceImpl<SysDictDataMapper, SysDi
      */
     @Override
     public int insertDictData(SysDictData data) {
-        int row = baseMapper.insertDictData(data);
+        int row = baseMapper.insert(data);
         if (row > 0) {
-            List<SysDictData> dictDatas = baseMapper.selectDictDataByType(data.getDictType());
+            List<SysDictData> dictDatas = this.selectDictDataByType(data.getDictType());
             DictUtils.setDictCache(data.getDictType(), dictDatas);
         }
         return row;
@@ -91,11 +82,16 @@ public class SysDictDataServiceImpl extends ServiceImpl<SysDictDataMapper, SysDi
      */
     @Override
     public int updateDictData(SysDictData data) {
-        int row = baseMapper.updateDictData(data);
+        int row = baseMapper.updateById(data);
         if (row > 0) {
-            List<SysDictData> dictDatas = baseMapper.selectDictDataByType(data.getDictType());
+            List<SysDictData> dictDatas = this.selectDictDataByType(data.getDictType());
             DictUtils.setDictCache(data.getDictType(), dictDatas);
         }
         return row;
+    }
+
+    @Override
+    public List<SysDictData> selectDictDataByType(String dictType) {
+        return super.list(Wrappers.<SysDictData>lambdaQuery().eq(SysDictData::getStatus, "0").eq(SysDictData::getDictType, dictType).orderByAsc(SysDictData::getDictSort));
     }
 }

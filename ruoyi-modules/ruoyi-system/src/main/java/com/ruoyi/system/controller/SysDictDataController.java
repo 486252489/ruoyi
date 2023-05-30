@@ -61,7 +61,7 @@ public class SysDictDataController extends BaseController {
     @RequiresPermissions("system:dict:query")
     @GetMapping(value = "/{dictCode}")
     public AjaxResult getInfo(@PathVariable Integer dictCode) {
-        return success(dictDataService.selectDictDataById(dictCode));
+        return success(dictDataService.getById(dictCode));
     }
 
     /**
@@ -83,7 +83,6 @@ public class SysDictDataController extends BaseController {
     @Log(title = "字典数据", businessType = BusinessType.INSERT)
     @PostMapping
     public AjaxResult add(@Validated @RequestBody SysDictData dict) {
-        dict.setCreateBy(SecurityUtils.getUsername());
         return toAjax(dictDataService.insertDictData(dict));
     }
 
@@ -94,7 +93,6 @@ public class SysDictDataController extends BaseController {
     @Log(title = "字典数据", businessType = BusinessType.UPDATE)
     @PutMapping
     public AjaxResult edit(@Validated @RequestBody SysDictData dict) {
-        dict.setUpdateBy(SecurityUtils.getUsername());
         return toAjax(dictDataService.updateDictData(dict));
     }
 
