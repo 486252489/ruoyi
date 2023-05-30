@@ -12,20 +12,6 @@ import com.ruoyi.system.api.domain.SysDictType;
  * @author ruoyi
  */
 public interface ISysDictTypeService extends IService<SysDictType> {
-    /**
-     * 根据条件分页查询字典类型
-     *
-     * @param dictType 字典类型信息
-     * @return 字典类型集合信息
-     */
-    public List<SysDictType> selectDictTypeList(SysDictType dictType);
-
-    /**
-     * 根据所有字典类型
-     *
-     * @return 字典类型集合信息
-     */
-    public List<SysDictType> selectDictTypeAll();
 
     /**
      * 根据字典类型查询字典数据
@@ -42,14 +28,6 @@ public interface ISysDictTypeService extends IService<SysDictType> {
      * @return 字典类型
      */
     public SysDictType selectDictTypeById(Integer dictId);
-
-    /**
-     * 根据字典类型查询信息
-     *
-     * @param dictType 字典类型
-     * @return 字典类型
-     */
-    public SysDictType selectDictTypeByType(String dictType);
 
     /**
      * 批量删除字典信息

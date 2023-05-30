@@ -1,8 +1,5 @@
 package com.ruoyi.system.controller;
 
-import java.util.List;
-import javax.servlet.http.HttpServletResponse;
-
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,14 +12,12 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import com.ruoyi.common.core.utils.poi.ExcelUtil;
 import com.ruoyi.common.core.web.controller.BaseController;
 import com.ruoyi.common.core.web.domain.AjaxResult;
 import com.ruoyi.common.core.web.page.TableDataInfo;
 import com.ruoyi.common.log.annotation.Log;
 import com.ruoyi.common.log.enums.BusinessType;
 import com.ruoyi.common.security.annotation.RequiresPermissions;
-import com.ruoyi.common.security.utils.SecurityUtils;
 import com.ruoyi.system.api.domain.SysDictType;
 import com.ruoyi.system.service.ISysDictTypeService;
 
@@ -46,7 +41,7 @@ public class SysDictTypeController extends BaseController {
     @RequiresPermissions("system:dict:list")
     @GetMapping("/list")
     public AjaxResult list(SysDictType dictType) {
-        return success(dictTypeService.selectDictTypeList(dictType));
+        return success(dictTypeService.list(Wrappers.lambdaQuery(dictType)));
     }
 
     /**
@@ -55,7 +50,7 @@ public class SysDictTypeController extends BaseController {
     @RequiresPermissions("system:dict:query")
     @GetMapping(value = "/{dictId}")
     public AjaxResult getInfo(@PathVariable Integer dictId) {
-        return success(dictTypeService.selectDictTypeById(dictId));
+        return success(dictTypeService.getById(dictId));
     }
 
     /**
@@ -68,7 +63,6 @@ public class SysDictTypeController extends BaseController {
         if (!dictTypeService.checkDictTypeUnique(dict)) {
             return error("新增字典'" + dict.getDictName() + "'失败，字典类型已存在");
         }
-        dict.setCreateBy(SecurityUtils.getUsername());
         return toAjax(dictTypeService.insertDictType(dict));
     }
 
@@ -82,7 +76,6 @@ public class SysDictTypeController extends BaseController {
         if (!dictTypeService.checkDictTypeUnique(dict)) {
             return error("修改字典'" + dict.getDictName() + "'失败，字典类型已存在");
         }
-        dict.setUpdateBy(SecurityUtils.getUsername());
         return toAjax(dictTypeService.updateDictType(dict));
     }
 
@@ -113,7 +106,6 @@ public class SysDictTypeController extends BaseController {
      */
     @GetMapping("/optionselect")
     public AjaxResult optionselect() {
-        List<SysDictType> dictTypes = dictTypeService.selectDictTypeAll();
-        return success(dictTypes);
+        return success(dictTypeService.list());
     }
 }

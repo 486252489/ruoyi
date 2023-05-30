@@ -1,12 +1,15 @@
 package com.ruoyi.system.service.impl;
 
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import javax.annotation.PostConstruct;
 
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.ruoyi.system.service.ISysDictDataService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,7 +32,7 @@ import com.ruoyi.system.service.ISysDictTypeService;
 public class SysDictTypeServiceImpl extends ServiceImpl<SysDictTypeMapper, SysDictType> implements ISysDictTypeService {
 
     @Autowired
-    private SysDictDataMapper dictDataMapper;
+    private ISysDictDataService dictDataService;
 
     /**
      * 项目启动时，初始化字典到缓存
@@ -37,27 +40,6 @@ public class SysDictTypeServiceImpl extends ServiceImpl<SysDictTypeMapper, SysDi
     @PostConstruct
     public void init() {
         loadingDictCache();
-    }
-
-    /**
-     * 根据条件分页查询字典类型
-     *
-     * @param dictType 字典类型信息
-     * @return 字典类型集合信息
-     */
-    @Override
-    public List<SysDictType> selectDictTypeList(SysDictType dictType) {
-        return baseMapper.selectDictTypeList(dictType);
-    }
-
-    /**
-     * 根据所有字典类型
-     *
-     * @return 字典类型集合信息
-     */
-    @Override
-    public List<SysDictType> selectDictTypeAll() {
-        return baseMapper.selectDictTypeAll();
     }
 
     /**
@@ -72,7 +54,7 @@ public class SysDictTypeServiceImpl extends ServiceImpl<SysDictTypeMapper, SysDi
         if (StringUtils.isNotEmpty(dictDatas)) {
             return dictDatas;
         }
-        dictDatas = dictDataMapper.selectDictDataByType(dictType);
+        dictDatas = dictDataService.selectDictDataByType(dictType);
         if (StringUtils.isNotEmpty(dictDatas)) {
             DictUtils.setDictCache(dictType, dictDatas);
             return dictDatas;
@@ -88,18 +70,7 @@ public class SysDictTypeServiceImpl extends ServiceImpl<SysDictTypeMapper, SysDi
      */
     @Override
     public SysDictType selectDictTypeById(Integer dictId) {
-        return baseMapper.selectDictTypeById(dictId);
-    }
-
-    /**
-     * 根据字典类型查询信息
-     *
-     * @param dictType 字典类型
-     * @return 字典类型
-     */
-    @Override
-    public SysDictType selectDictTypeByType(String dictType) {
-        return baseMapper.selectDictTypeByType(dictType);
+        return super.getById(dictId);
     }
 
     /**
@@ -111,12 +82,13 @@ public class SysDictTypeServiceImpl extends ServiceImpl<SysDictTypeMapper, SysDi
     public void deleteDictTypeByIds(Integer[] dictIds) {
         for (Integer dictId : dictIds) {
             SysDictType dictType = selectDictTypeById(dictId);
-            if (dictDataMapper.countDictDataByType(dictType.getDictType()) > 0) {
+            Long count = dictDataService.count(Wrappers.<SysDictData>lambdaQuery().eq(SysDictData::getDictType, dictType.getDictType()));
+            if (count.intValue() > 0) {
                 throw new ServiceException(String.format("%1$s已分配,不能删除", dictType.getDictName()));
             }
-            baseMapper.deleteDictTypeById(dictId);
             DictUtils.removeDictCache(dictType.getDictType());
         }
+        super.removeBatchByIds(Arrays.asList(dictIds));
     }
 
     /**
@@ -124,9 +96,7 @@ public class SysDictTypeServiceImpl extends ServiceImpl<SysDictTypeMapper, SysDi
      */
     @Override
     public void loadingDictCache() {
-        SysDictData dictData = new SysDictData();
-        dictData.setStatus("0");
-        Map<String, List<SysDictData>> dictDataMap = dictDataMapper.selectDictDataList(dictData).stream().collect(Collectors.groupingBy(SysDictData::getDictType));
+        Map<String, List<SysDictData>> dictDataMap = dictDataService.list(Wrappers.<SysDictData>lambdaQuery().eq(SysDictData::getStatus, "0")).stream().collect(Collectors.groupingBy(SysDictData::getDictType));
         for (Map.Entry<String, List<SysDictData>> entry : dictDataMap.entrySet()) {
             DictUtils.setDictCache(entry.getKey(), entry.getValue().stream().sorted(Comparator.comparing(SysDictData::getDictSort)).collect(Collectors.toList()));
         }
@@ -157,7 +127,7 @@ public class SysDictTypeServiceImpl extends ServiceImpl<SysDictTypeMapper, SysDi
      */
     @Override
     public int insertDictType(SysDictType dict) {
-        int row = baseMapper.insertDictType(dict);
+        int row = baseMapper.insert(dict);
         if (row > 0) {
             DictUtils.setDictCache(dict.getDictType(), null);
         }
@@ -173,11 +143,11 @@ public class SysDictTypeServiceImpl extends ServiceImpl<SysDictTypeMapper, SysDi
     @Override
     @Transactional(rollbackFor = Exception.class)
     public int updateDictType(SysDictType dict) {
-        SysDictType oldDict = baseMapper.selectDictTypeById(dict.getDictId());
-        dictDataMapper.updateDictDataType(oldDict.getDictType(), dict.getDictType());
-        int row = baseMapper.updateDictType(dict);
+        SysDictType oldDict = super.getById(dict.getDictId());
+        dictDataService.update(Wrappers.<SysDictData>lambdaUpdate().set(SysDictData::getDictType, dict.getDictType()).eq(SysDictData::getDictType, oldDict.getDictType()));
+        int row = baseMapper.updateById(dict);
         if (row > 0) {
-            List<SysDictData> dictDatas = dictDataMapper.selectDictDataByType(dict.getDictType());
+            List<SysDictData> dictDatas = dictDataService.selectDictDataByType(dict.getDictType());
             DictUtils.setDictCache(dict.getDictType(), dictDatas);
         }
         return row;
@@ -191,9 +161,8 @@ public class SysDictTypeServiceImpl extends ServiceImpl<SysDictTypeMapper, SysDi
      */
     @Override
     public boolean checkDictTypeUnique(SysDictType dict) {
-        Integer dictId = StringUtils.isNull(dict.getDictId()) ? -1 : dict.getDictId();
-        SysDictType dictType = baseMapper.checkDictTypeUnique(dict.getDictType());
-        if (StringUtils.isNotNull(dictType) && dictType.getDictId().intValue() != dictId.intValue()) {
+        Long count = super.count(Wrappers.<SysDictType>lambdaQuery().ne(StringUtils.isNotNull(dict.getDictId()) ,SysDictType::getDictId, dict.getDictId()).eq(SysDictType::getDictType, dict.getDictType()));
+        if (count.intValue() > 0) {
             return UserConstants.NOT_UNIQUE;
         }
         return UserConstants.UNIQUE;
