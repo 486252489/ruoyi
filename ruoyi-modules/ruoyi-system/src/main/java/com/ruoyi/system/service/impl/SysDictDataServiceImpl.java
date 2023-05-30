@@ -20,30 +20,6 @@ import com.ruoyi.system.service.ISysDictDataService;
 public class SysDictDataServiceImpl extends ServiceImpl<SysDictDataMapper, SysDictData> implements ISysDictDataService {
 
     /**
-     * 根据条件分页查询字典数据
-     *
-     * @param dictData 字典数据信息
-     * @return 字典数据集合信息
-     */
-    @Override
-    public List<SysDictData> selectDictDataList(SysDictData dictData) {
-        return super.list(Wrappers.lambdaQuery(dictData).orderByAsc(SysDictData::getDictSort));
-    }
-
-    /**
-     * 根据字典类型和字典键值查询字典数据信息
-     *
-     * @param dictType  字典类型
-     * @param dictValue 字典键值
-     * @return 字典标签
-     */
-    @Override
-    public String selectDictLabel(String dictType, String dictValue) {
-        SysDictData sysDictData = super.getOne(Wrappers.<SysDictData>lambdaQuery().select(SysDictData::getDictLabel).eq(SysDictData::getDictType, dictType).eq(SysDictData::getDictValue, dictValue));
-        return sysDictData != null ? sysDictData.getDictLabel() : null;
-    }
-
-    /**
      * 批量删除字典数据信息
      *
      * @param dictCodes 需要删除的字典数据ID

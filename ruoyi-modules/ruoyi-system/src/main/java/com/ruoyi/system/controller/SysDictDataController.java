@@ -46,13 +46,13 @@ public class SysDictDataController extends BaseController {
     @RequiresPermissions("system:dict:list")
     @GetMapping("/page")
     public TableDataInfo page(SysDictData dictData, Page<SysDictData> page) {
-        return getDataTable(dictDataService.page(page, Wrappers.lambdaQuery(dictData)));
+        return getDataTable(dictDataService.page(page, Wrappers.lambdaQuery(dictData).orderByAsc(SysDictData::getDictSort)));
     }
 
     @RequiresPermissions("system:dict:list")
     @GetMapping("/list")
     public AjaxResult list(SysDictData dictData) {
-        return success(dictDataService.selectDictDataList(dictData));
+        return success(dictDataService.list(Wrappers.lambdaQuery(dictData).orderByAsc(SysDictData::getDictSort)));
     }
 
     /**
