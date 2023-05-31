@@ -2,6 +2,9 @@ package com.ruoyi.system.controller;
 
 import java.util.List;
 
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.ruoyi.system.domain.SysRoleMenu;
+import com.ruoyi.system.service.ISysRoleMenuService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -33,6 +36,8 @@ import com.ruoyi.system.service.ISysMenuService;
 public class SysMenuController extends BaseController {
     @Autowired
     private ISysMenuService menuService;
+    @Autowired
+    private ISysRoleMenuService roleMenuService;
 
     /**
      * 获取菜单列表
@@ -119,7 +124,8 @@ public class SysMenuController extends BaseController {
         if (menuService.hasChildByMenuId(menuId)) {
             return warn("存在子菜单,不允许删除");
         }
-        if (menuService.checkMenuExistRole(menuId)) {
+        Long count = roleMenuService.count(Wrappers.<SysRoleMenu>lambdaQuery().eq(SysRoleMenu::getMenuId, menuId));
+        if (count.intValue() > 0) {
             return warn("菜单已分配,不允许删除");
         }
         return toAjax(menuService.removeById(menuId));

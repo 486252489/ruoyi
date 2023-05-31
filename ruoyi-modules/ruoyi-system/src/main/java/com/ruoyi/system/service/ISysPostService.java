@@ -37,14 +37,6 @@ public interface ISysPostService extends IService<SysPost> {
     public boolean checkPostCodeUnique(SysPost post);
 
     /**
-     * 通过岗位ID查询岗位使用数量
-     *
-     * @param postId 岗位ID
-     * @return 结果
-     */
-    public int countUserPostById(Integer postId);
-
-    /**
      * 批量删除岗位信息
      *
      * @param postIds 需要删除的岗位ID

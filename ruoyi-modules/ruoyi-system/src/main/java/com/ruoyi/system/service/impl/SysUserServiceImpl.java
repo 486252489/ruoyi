@@ -5,7 +5,9 @@ import java.util.List;
 import java.util.stream.Collectors;
 import javax.validation.Validator;
 
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.ruoyi.system.service.ISysUserPostService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +29,6 @@ import com.ruoyi.system.domain.SysUserRole;
 import com.ruoyi.system.mapper.SysPostMapper;
 import com.ruoyi.system.mapper.SysRoleMapper;
 import com.ruoyi.system.mapper.SysUserMapper;
-import com.ruoyi.system.mapper.SysUserPostMapper;
 import com.ruoyi.system.mapper.SysUserRoleMapper;
 import com.ruoyi.system.service.ISysConfigService;
 import com.ruoyi.system.service.ISysUserService;
@@ -51,7 +52,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
     private SysUserRoleMapper userRoleMapper;
 
     @Autowired
-    private SysUserPostMapper userPostMapper;
+    private ISysUserPostService userPostService;
 
     @Autowired
     private ISysConfigService configService;
@@ -268,7 +269,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
         // 新增用户与角色管理
         insertUserRole(user);
         // 删除用户与岗位关联
-        userPostMapper.deleteUserPostByUserId(userId);
+        userPostService.remove(Wrappers.<SysUserPost>lambdaQuery().eq(SysUserPost::getUserId));
         // 新增用户与岗位管理
         insertUserPost(user);
         return baseMapper.updateUser(user);
@@ -369,7 +370,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
                 up.setPostId(postId);
                 list.add(up);
             }
-            userPostMapper.batchUserPost(list);
+            userPostService.saveBatch(list);
         }
     }
 
@@ -405,7 +406,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
         // 删除用户与角色关联
         userRoleMapper.deleteUserRoleByUserId(userId);
         // 删除用户与岗位表
-        userPostMapper.deleteUserPostByUserId(userId);
+        userPostService.remove(Wrappers.<SysUserPost>lambdaQuery().eq(SysUserPost::getUserId, userId));
         return baseMapper.deleteUserById(userId);
     }
 
@@ -425,7 +426,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
         // 删除用户与角色关联
         userRoleMapper.deleteUserRole(userIds);
         // 删除用户与岗位关联
-        userPostMapper.deleteUserPost(userIds);
+        userPostService.remove(Wrappers.<SysUserPost>lambdaQuery().in(SysUserPost::getUserId, userIds));
         return baseMapper.deleteUserByIds(userIds);
     }
 

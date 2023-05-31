@@ -95,13 +95,6 @@ public interface ISysMenuService extends IService<SysMenu> {
      */
      boolean hasChildByMenuId(Integer menuId);
 
-    /**
-     * 查询菜单是否存在角色
-     *
-     * @param menuId 菜单ID
-     * @return 结果 true 存在 false 不存在
-     */
-     boolean checkMenuExistRole(Integer menuId);
 
     /**
      * 校验菜单名称是否唯一

@@ -5,6 +5,8 @@ import java.util.List;
 
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.ruoyi.system.domain.SysUserPost;
+import com.ruoyi.system.service.ISysUserPostService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.ruoyi.common.core.constant.UserConstants;
@@ -12,7 +14,6 @@ import com.ruoyi.common.core.exception.ServiceException;
 import com.ruoyi.common.core.utils.StringUtils;
 import com.ruoyi.system.domain.SysPost;
 import com.ruoyi.system.mapper.SysPostMapper;
-import com.ruoyi.system.mapper.SysUserPostMapper;
 import com.ruoyi.system.service.ISysPostService;
 
 /**
@@ -24,7 +25,7 @@ import com.ruoyi.system.service.ISysPostService;
 public class SysPostServiceImpl extends ServiceImpl<SysPostMapper, SysPost> implements ISysPostService {
 
     @Autowired
-    private SysUserPostMapper userPostMapper;
+    private ISysUserPostService userPostService;
 
     /**
      * 根据用户ID获取岗位选择框列表
@@ -70,17 +71,6 @@ public class SysPostServiceImpl extends ServiceImpl<SysPostMapper, SysPost> impl
     }
 
     /**
-     * 通过岗位ID查询岗位使用数量
-     *
-     * @param postId 岗位ID
-     * @return 结果
-     */
-    @Override
-    public int countUserPostById(Integer postId) {
-        return userPostMapper.countUserPostById(postId);
-    }
-
-    /**
      * 批量删除岗位信息
      *
      * @param postIds 需要删除的岗位ID
@@ -90,7 +80,8 @@ public class SysPostServiceImpl extends ServiceImpl<SysPostMapper, SysPost> impl
     public boolean deletePostByIds(Integer[] postIds) {
         for (Integer postId : postIds) {
             SysPost post = super.getById(postId);
-            if (countUserPostById(postId) > 0) {
+            Long count = userPostService.count(Wrappers.<SysUserPost>lambdaQuery().eq(SysUserPost::getPostId, postId));
+            if (count.intValue() > 0) {
                 throw new ServiceException(String.format("%1$s已分配,不能删除", post.getPostName()));
             }
         }
