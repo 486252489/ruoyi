@@ -34,7 +34,6 @@ import com.ruoyi.system.service.ISysMenuService;
  */
 @Service
 public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> implements ISysMenuService {
-    public static final String PREMISSION_STRING = "perms[\"{0}\"]";
 
     @Autowired
     private SysRoleMapper roleMapper;
@@ -227,17 +226,6 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
     }
 
     /**
-     * 根据菜单ID查询信息
-     *
-     * @param menuId 菜单ID
-     * @return 菜单信息
-     */
-    @Override
-    public SysMenu selectMenuById(Integer menuId) {
-        return baseMapper.selectMenuById(menuId);
-    }
-
-    /**
      * 是否存在菜单子节点
      *
      * @param menuId 菜单ID
@@ -259,39 +247,6 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
     public boolean checkMenuExistRole(Integer menuId) {
         int result = roleMenuMapper.checkMenuExistRole(menuId);
         return result > 0;
-    }
-
-    /**
-     * 新增保存菜单信息
-     *
-     * @param menu 菜单信息
-     * @return 结果
-     */
-    @Override
-    public int insertMenu(SysMenu menu) {
-        return baseMapper.insertMenu(menu);
-    }
-
-    /**
-     * 修改保存菜单信息
-     *
-     * @param menu 菜单信息
-     * @return 结果
-     */
-    @Override
-    public int updateMenu(SysMenu menu) {
-        return baseMapper.updateMenu(menu);
-    }
-
-    /**
-     * 删除菜单管理信息
-     *
-     * @param menuId 菜单ID
-     * @return 结果
-     */
-    @Override
-    public int deleteMenuById(Integer menuId) {
-        return baseMapper.deleteMenuById(menuId);
     }
 
     /**

@@ -1,10 +1,12 @@
 package com.ruoyi.system.controller;
 
+import java.util.Arrays;
 import java.util.List;
 import javax.servlet.http.HttpServletResponse;
 
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.ruoyi.common.core.utils.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -38,20 +40,20 @@ public class SysOperlogController extends BaseController {
     @RequiresPermissions("system:operlog:list")
     @GetMapping("/page")
     public TableDataInfo page(SysOperLog operLog, Page<SysOperLog> page) {
-        return getDataTable(operLogService.page(page, Wrappers.lambdaQuery(operLog)));
+        return getDataTable(operLogService.page(page, Wrappers.lambdaQuery(operLog).in(StringUtils.isNotEmpty(operLog.getBusinessTypes()),SysOperLog::getBusinessType, operLog.getBusinessTypes())));
     }
 
     @RequiresPermissions("system:operlog:list")
     @GetMapping("/list")
     public AjaxResult list(SysOperLog operLog) {
-        return success(operLogService.selectOperLogList(operLog));
+        return success(operLogService.list(Wrappers.lambdaQuery(operLog).in(StringUtils.isNotEmpty(operLog.getBusinessTypes()),SysOperLog::getBusinessType, operLog.getBusinessTypes())));
     }
 
     @Log(title = "操作日志", businessType = BusinessType.DELETE)
     @RequiresPermissions("system:operlog:remove")
     @DeleteMapping("/{operIds}")
     public AjaxResult remove(@PathVariable Integer[] operIds) {
-        return toAjax(operLogService.deleteOperLogByIds(operIds));
+        return toAjax(operLogService.removeBatchByIds(Arrays.asList(operIds)));
     }
 
     @RequiresPermissions("system:operlog:remove")
@@ -65,6 +67,6 @@ public class SysOperlogController extends BaseController {
     @InnerAuth
     @PostMapping
     public AjaxResult add(@RequestBody SysOperLog operLog) {
-        return toAjax(operLogService.insertOperlog(operLog));
+        return toAjax(operLogService.save(operLog));
     }
 }

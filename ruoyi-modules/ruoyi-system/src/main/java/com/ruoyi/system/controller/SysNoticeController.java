@@ -1,5 +1,6 @@
 package com.ruoyi.system.controller;
 
+import java.util.Arrays;
 import java.util.List;
 
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
@@ -50,7 +51,7 @@ public class SysNoticeController extends BaseController {
     @RequiresPermissions("system:notice:list")
     @GetMapping("/list")
     public AjaxResult list(SysNotice notice) {
-        return success(noticeService.selectNoticeList(notice));
+        return success(noticeService.list(Wrappers.lambdaQuery(notice)));
     }
 
     /**
@@ -59,7 +60,7 @@ public class SysNoticeController extends BaseController {
     @RequiresPermissions("system:notice:query")
     @GetMapping(value = "/{noticeId}")
     public AjaxResult getInfo(@PathVariable Integer noticeId) {
-        return success(noticeService.selectNoticeById(noticeId));
+        return success(noticeService.getById(noticeId));
     }
 
     /**
@@ -69,8 +70,7 @@ public class SysNoticeController extends BaseController {
     @Log(title = "通知公告", businessType = BusinessType.INSERT)
     @PostMapping
     public AjaxResult add(@Validated @RequestBody SysNotice notice) {
-        notice.setCreateBy(SecurityUtils.getUsername());
-        return toAjax(noticeService.insertNotice(notice));
+        return toAjax(noticeService.save(notice));
     }
 
     /**
@@ -81,7 +81,7 @@ public class SysNoticeController extends BaseController {
     @PutMapping
     public AjaxResult edit(@Validated @RequestBody SysNotice notice) {
         notice.setUpdateBy(SecurityUtils.getUsername());
-        return toAjax(noticeService.updateNotice(notice));
+        return toAjax(noticeService.updateById(notice));
     }
 
     /**
@@ -91,6 +91,6 @@ public class SysNoticeController extends BaseController {
     @Log(title = "通知公告", businessType = BusinessType.DELETE)
     @DeleteMapping("/{noticeIds}")
     public AjaxResult remove(@PathVariable Integer[] noticeIds) {
-        return toAjax(noticeService.deleteNoticeByIds(noticeIds));
+        return toAjax(noticeService.removeBatchByIds(Arrays.asList(noticeIds)));
     }
 }

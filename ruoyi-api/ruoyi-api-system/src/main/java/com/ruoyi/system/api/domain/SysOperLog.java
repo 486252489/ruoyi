@@ -38,6 +38,7 @@ public class SysOperLog extends BaseEntity<SysOperLog> {
     /**
      * 业务类型数组
      */
+    @TableField(exist = false)
     private Integer[] businessTypes;
 
     /**

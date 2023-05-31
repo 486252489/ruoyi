@@ -1,5 +1,6 @@
 package com.ruoyi.system.controller;
 
+import java.util.Arrays;
 import java.util.List;
 import javax.servlet.http.HttpServletResponse;
 
@@ -49,14 +50,14 @@ public class SysLogininforController extends BaseController {
     @RequiresPermissions("system:logininfor:list")
     @GetMapping("/list")
     public AjaxResult list(SysLogininfor logininfor) {
-        return success(logininforService.selectLogininforList(logininfor));
+        return success(logininforService.list(Wrappers.lambdaQuery(logininfor).orderByDesc(SysLogininfor::getInfoId)));
     }
 
     @RequiresPermissions("system:logininfor:remove")
     @Log(title = "登录日志", businessType = BusinessType.DELETE)
     @DeleteMapping("/{infoIds}")
     public AjaxResult remove(@PathVariable Integer[] infoIds) {
-        return toAjax(logininforService.deleteLogininforByIds(infoIds));
+        return toAjax(logininforService.removeBatchByIds(Arrays.asList(infoIds)));
     }
 
     @RequiresPermissions("system:logininfor:remove")
@@ -78,6 +79,6 @@ public class SysLogininforController extends BaseController {
     @InnerAuth
     @PostMapping
     public AjaxResult add(@RequestBody SysLogininfor logininfor) {
-        return toAjax(logininforService.insertLogininfor(logininfor));
+        return toAjax(logininforService.save(logininfor));
     }
 }
