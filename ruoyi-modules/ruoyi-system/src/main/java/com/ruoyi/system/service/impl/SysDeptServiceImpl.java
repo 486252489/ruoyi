@@ -103,7 +103,7 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDept> impl
     @Override
     public List<Integer> selectDeptListByRoleId(Integer roleId) {
         SysRole role = roleMapper.selectRoleById(roleId);
-        return baseMapper.selectDeptListByRoleId(roleId, role.isDeptCheckStrictly());
+        return baseMapper.selectDeptListByRoleId(roleId, role.getDeptCheckStrictly());
     }
 
     /**

@@ -1,6 +1,7 @@
 package com.ruoyi.system.service.impl;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 import javax.validation.Validator;
@@ -9,8 +10,7 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.ruoyi.system.service.ISysUserPostService;
 import com.ruoyi.system.service.ISysUserRoleService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -38,9 +38,9 @@ import com.ruoyi.system.service.ISysUserService;
  *
  * @author ruoyi
  */
+@Slf4j
 @Service
 public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> implements ISysUserService {
-    private static final Logger log = LoggerFactory.getLogger(SysUserServiceImpl.class);
 
     @Autowired
     private SysRoleMapper roleMapper;
@@ -156,9 +156,8 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
      */
     @Override
     public boolean checkUserNameUnique(SysUser user) {
-        Integer userId = StringUtils.isNull(user.getUserId()) ? -1 : user.getUserId();
-        SysUser info = baseMapper.checkUserNameUnique(user.getUserName());
-        if (StringUtils.isNotNull(info) && info.getUserId().intValue() != userId.intValue()) {
+        Long count = super.count(Wrappers.<SysUser>lambdaQuery().ne(StringUtils.isNotNull(user.getUserId()), SysUser::getUserId, user.getUserId()).eq(SysUser::getUserName, user.getUserName()));
+        if (count.intValue() > 0) {
             return UserConstants.NOT_UNIQUE;
         }
         return UserConstants.UNIQUE;
@@ -172,9 +171,8 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
      */
     @Override
     public boolean checkPhoneUnique(SysUser user) {
-        Integer userId = StringUtils.isNull(user.getUserId()) ? -1 : user.getUserId();
-        SysUser info = baseMapper.checkPhoneUnique(user.getPhonenumber());
-        if (StringUtils.isNotNull(info) && info.getUserId().intValue() != userId.intValue()) {
+        Long count = super.count(Wrappers.<SysUser>lambdaQuery().ne(StringUtils.isNotNull(user.getUserId()), SysUser::getUserId, user.getUserId()).eq(SysUser::getPhonenumber, user.getPhonenumber()));
+        if (count.intValue() > 0) {
             return UserConstants.NOT_UNIQUE;
         }
         return UserConstants.UNIQUE;
@@ -188,9 +186,8 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
      */
     @Override
     public boolean checkEmailUnique(SysUser user) {
-        Integer userId = StringUtils.isNull(user.getUserId()) ? -1 : user.getUserId();
-        SysUser info = baseMapper.checkEmailUnique(user.getEmail());
-        if (StringUtils.isNotNull(info) && info.getUserId().intValue() != userId.intValue()) {
+        Long count = super.count(Wrappers.<SysUser>lambdaQuery().ne(StringUtils.isNotNull(user.getUserId()), SysUser::getUserId, user.getUserId()).eq(SysUser::getEmail, user.getEmail()));
+        if (count.intValue() > 0) {
             return UserConstants.NOT_UNIQUE;
         }
         return UserConstants.UNIQUE;
@@ -235,7 +232,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
     @Transactional(rollbackFor = Exception.class)
     public int insertUser(SysUser user) {
         // 新增用户信息
-        int rows = baseMapper.insertUser(user);
+        int rows = baseMapper.insert(user);
         // 新增用户岗位关联
         insertUserPost(user);
         // 新增用户与角色管理
@@ -251,7 +248,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
      */
     @Override
     public boolean registerUser(SysUser user) {
-        return baseMapper.insertUser(user) > 0;
+        return baseMapper.insert(user) > 0;
     }
 
     /**
@@ -272,7 +269,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
         userPostService.remove(Wrappers.<SysUserPost>lambdaQuery().eq(SysUserPost::getUserId, userId));
         // 新增用户与岗位管理
         insertUserPost(user);
-        return baseMapper.updateUser(user);
+        return baseMapper.updateById(user);
     }
 
     /**
@@ -296,7 +293,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
      */
     @Override
     public int updateUserStatus(SysUser user) {
-        return baseMapper.updateUser(user);
+        return baseMapper.updateById(user);
     }
 
     /**
@@ -307,7 +304,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
      */
     @Override
     public int updateUserProfile(SysUser user) {
-        return baseMapper.updateUser(user);
+        return baseMapper.updateById(user);
     }
 
     /**
@@ -319,7 +316,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
      */
     @Override
     public boolean updateUserAvatar(String userName, String avatar) {
-        return baseMapper.updateUserAvatar(userName, avatar) > 0;
+        return super.update(Wrappers.<SysUser>lambdaUpdate().set(SysUser::getAvatar, avatar).eq(SysUser::getUserName, userName));
     }
 
     /**
@@ -330,7 +327,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
      */
     @Override
     public int resetPwd(SysUser user) {
-        return baseMapper.updateUser(user);
+        return baseMapper.updateById(user);
     }
 
     /**
@@ -341,8 +338,8 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
      * @return 结果
      */
     @Override
-    public int resetUserPwd(String userName, String password) {
-        return baseMapper.resetUserPwd(userName, password);
+    public boolean resetUserPwd(String userName, String password) {
+        return super.update(Wrappers.<SysUser>lambdaUpdate().set(SysUser::getPassword, password).eq(SysUser::getUserName, userName));
     }
 
     /**
@@ -407,7 +404,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
         userRoleService.remove(Wrappers.<SysUserRole>lambdaQuery().eq(SysUserRole::getUserId, userId));
         // 删除用户与岗位表
         userPostService.remove(Wrappers.<SysUserPost>lambdaQuery().eq(SysUserPost::getUserId, userId));
-        return baseMapper.deleteUserById(userId);
+        return baseMapper.deleteById(userId);
     }
 
     /**
@@ -418,7 +415,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
      */
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public int deleteUserByIds(Integer[] userIds) {
+    public boolean deleteUserByIds(Integer[] userIds) {
         for (Integer userId : userIds) {
             checkUserAllowed(new SysUser(userId));
             checkUserDataScope(userId);
@@ -427,7 +424,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
         userRoleService.remove(Wrappers.<SysUserRole>lambdaQuery().in(SysUserRole::getUserId, userIds));
         // 删除用户与岗位关联
         userPostService.remove(Wrappers.<SysUserPost>lambdaQuery().in(SysUserPost::getUserId, userIds));
-        return baseMapper.deleteUserByIds(userIds);
+        return super.removeBatchByIds(Arrays.asList(userIds));
     }
 
     /**
@@ -456,7 +453,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
                     BeanValidators.validateWithException(validator, user);
                     user.setPassword(SecurityUtils.encryptPassword(password));
                     user.setCreateBy(operName);
-                    baseMapper.insertUser(user);
+                    baseMapper.insert(user);
                     successNum++;
                     successMsg.append("<br/>" + successNum + "、账号 " + user.getUserName() + " 导入成功");
                 } else if (isUpdateSupport) {
@@ -465,7 +462,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
                     checkUserDataScope(u.getUserId());
                     user.setUserId(u.getUserId());
                     user.setUpdateBy(operName);
-                    baseMapper.updateUser(user);
+                    baseMapper.updateById(user);
                     successNum++;
                     successMsg.append("<br/>" + successNum + "、账号 " + user.getUserName() + " 更新成功");
                 } else {

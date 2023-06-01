@@ -102,7 +102,7 @@ public class SysProfileController extends BaseController {
         if (SecurityUtils.matchesPassword(newPassword, password)) {
             return error("新密码不能与旧密码相同");
         }
-        if (userService.resetUserPwd(username, SecurityUtils.encryptPassword(newPassword)) > 0) {
+        if (userService.resetUserPwd(username, SecurityUtils.encryptPassword(newPassword))) {
             // 更新缓存用户密码
             LoginUser loginUser = SecurityUtils.getLoginUser();
             loginUser.getSysUser().setPassword(SecurityUtils.encryptPassword(newPassword));

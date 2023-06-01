@@ -27,20 +27,4 @@ public interface SysPostMapper extends BaseMapper<SysPost> {
      * @return 结果
      */
     public List<SysPost> selectPostsByUserName(String userName);
-
-    /**
-     * 校验岗位名称
-     *
-     * @param postName 岗位名称
-     * @return 结果
-     */
-    public SysPost checkPostNameUnique(String postName);
-
-    /**
-     * 校验岗位编码
-     *
-     * @param postCode 岗位编码
-     * @return 结果
-     */
-    public SysPost checkPostCodeUnique(String postCode);
 }

@@ -27,6 +27,6 @@ public interface SysDeptMapper extends BaseMapper<SysDept> {
      * @param deptCheckStrictly 部门树选择项是否关联显示
      * @return 选中部门列表
      */
-    public List<Integer> selectDeptListByRoleId(@Param("roleId") Integer roleId, @Param("deptCheckStrictly") boolean deptCheckStrictly);
+    public List<Integer> selectDeptListByRoleId(@Param("roleId") Integer roleId, @Param("deptCheckStrictly") Boolean deptCheckStrictly);
 
 }

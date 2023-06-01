@@ -134,7 +134,7 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
     @Override
     public List<Integer> selectMenuListByRoleId(Integer roleId) {
         SysRole role = roleMapper.selectRoleById(roleId);
-        return baseMapper.selectMenuListByRoleId(roleId, role.isMenuCheckStrictly());
+        return baseMapper.selectMenuListByRoleId(roleId, role.getMenuCheckStrictly());
     }
 
     /**

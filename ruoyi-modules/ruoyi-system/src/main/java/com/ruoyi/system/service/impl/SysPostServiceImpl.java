@@ -46,9 +46,8 @@ public class SysPostServiceImpl extends ServiceImpl<SysPostMapper, SysPost> impl
      */
     @Override
     public boolean checkPostNameUnique(SysPost post) {
-        Integer postId = StringUtils.isNull(post.getPostId()) ? -1 : post.getPostId();
-        SysPost info = baseMapper.checkPostNameUnique(post.getPostName());
-        if (StringUtils.isNotNull(info) && info.getPostId().intValue() != postId.intValue()) {
+        Long count = super.count(Wrappers.<SysPost>lambdaQuery().ne(post.getPostId() != null, SysPost::getPostId, post.getPostId()).eq(SysPost::getPostName, post.getPostName()));
+        if (count.intValue() > 0) {
             return UserConstants.NOT_UNIQUE;
         }
         return UserConstants.UNIQUE;
@@ -62,9 +61,8 @@ public class SysPostServiceImpl extends ServiceImpl<SysPostMapper, SysPost> impl
      */
     @Override
     public boolean checkPostCodeUnique(SysPost post) {
-        Integer postId = StringUtils.isNull(post.getPostId()) ? -1 : post.getPostId();
-        SysPost info = baseMapper.checkPostCodeUnique(post.getPostCode());
-        if (StringUtils.isNotNull(info) && info.getPostId().intValue() != postId.intValue()) {
+        Long count = super.count(Wrappers.<SysPost>lambdaQuery().ne(post.getPostId() != null, SysPost::getPostId, post.getPostId()).eq(SysPost::getPostCode, post.getPostCode()));
+        if (count.intValue() > 0) {
             return UserConstants.NOT_UNIQUE;
         }
         return UserConstants.UNIQUE;

@@ -177,7 +177,7 @@ public interface ISysUserService extends IService<SysUser> {
      * @param password 密码
      * @return 结果
      */
-    public int resetUserPwd(String userName, String password);
+    public boolean resetUserPwd(String userName, String password);
 
     /**
      * 通过用户ID删除用户
@@ -193,7 +193,7 @@ public interface ISysUserService extends IService<SysUser> {
      * @param userIds 需要删除的用户ID
      * @return 结果
      */
-    public int deleteUserByIds(Integer[] userIds);
+    public boolean deleteUserByIds(Integer[] userIds);
 
     /**
      * 导入用户数据
