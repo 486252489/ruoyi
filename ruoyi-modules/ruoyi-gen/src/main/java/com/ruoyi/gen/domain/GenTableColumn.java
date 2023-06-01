@@ -106,6 +106,13 @@ public class GenTableColumn extends BaseEntity {
      */
     private Integer sort;
 
+    public boolean isPk() {
+        return isPk(this.isPk);
+    }
+
+    public boolean isPk(String isPk) {
+        return isPk != null && StringUtils.equals("1", isPk);
+    }
 
     public boolean isIncrement() {
         return isIncrement(this.isIncrement);

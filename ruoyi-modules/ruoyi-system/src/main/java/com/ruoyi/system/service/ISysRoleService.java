@@ -123,20 +123,12 @@ public interface ISysRoleService extends IService<SysRole> {
     boolean authDataScope(SysRole role);
 
     /**
-     * 通过角色ID删除角色
-     *
-     * @param roleId 角色ID
-     * @return 结果
-     */
-    int deleteRoleById(Integer roleId);
-
-    /**
      * 批量删除角色信息
      *
      * @param roleIds 需要删除的角色ID
      * @return 结果
      */
-    int deleteRoleByIds(Integer[] roleIds);
+    boolean deleteRoleByIds(Integer[] roleIds);
 
     /**
      * 取消授权用户角色
@@ -153,7 +145,7 @@ public interface ISysRoleService extends IService<SysRole> {
      * @param userIds 需要取消授权的用户数据ID
      * @return 结果
      */
-    int deleteAuthUsers(Integer roleId, Integer[] userIds);
+    boolean deleteAuthUsers(Integer roleId, Integer[] userIds);
 
     /**
      * 批量选择授权用户角色
@@ -162,5 +154,5 @@ public interface ISysRoleService extends IService<SysRole> {
      * @param userIds 需要删除的用户数据ID
      * @return 结果
      */
-    int insertAuthUsers(Integer roleId, Integer[] userIds);
+    boolean insertAuthUsers(Integer roleId, Integer[] userIds);
 }

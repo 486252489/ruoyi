@@ -290,22 +290,6 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole> impl
     }
 
     /**
-     * 通过角色ID删除角色
-     *
-     * @param roleId 角色ID
-     * @return 结果
-     */
-    @Override
-    @Transactional(rollbackFor = Exception.class)
-    public int deleteRoleById(Integer roleId) {
-        // 删除角色与菜单关联
-        roleMenuService.remove(Wrappers.<SysRoleMenu>lambdaQuery().eq(SysRoleMenu::getRoleId, roleId));
-        // 删除角色与部门关联
-        roleDeptService.remove(Wrappers.<SysRoleDept>lambdaQuery().eq(SysRoleDept::getRoleId, roleId));
-        return baseMapper.deleteById(roleId);
-    }
-
-    /**
      * 批量删除角色信息
      *
      * @param roleIds 需要删除的角色ID
@@ -313,7 +297,7 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole> impl
      */
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public int deleteRoleByIds(Integer[] roleIds) {
+    public boolean deleteRoleByIds(Integer[] roleIds) {
         for (Integer roleId : roleIds) {
             checkRoleAllowed(new SysRole(roleId));
             checkRoleDataScope(roleId);
@@ -328,7 +312,7 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole> impl
         roleMenuService.remove(Wrappers.<SysRoleMenu>lambdaQuery().in(SysRoleMenu::getRoleId, roleIds));
         // 删除角色与部门关联
         roleDeptService.remove(Wrappers.<SysRoleDept>lambdaQuery().in(SysRoleDept::getRoleId, roleIds));
-        return super.removeByIds(roleIds);
+        return super.removeByIds(Arrays.asList(roleIds));
     }
 
     /**
@@ -350,8 +334,8 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole> impl
      * @return 结果
      */
     @Override
-    public int deleteAuthUsers(Integer roleId, Integer[] userIds) {
-        return userRoleService.remove(Wrappers.lambdaQuery().eq(SysUserRole::getRoleId, roleId).in(SysUserRole::getUserId, userIds));
+    public boolean deleteAuthUsers(Integer roleId, Integer[] userIds) {
+        return userRoleService.remove(Wrappers.<SysUserRole>lambdaQuery().eq(SysUserRole::getRoleId, roleId).in(SysUserRole::getUserId, userIds));
     }
 
     /**
@@ -362,7 +346,7 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole> impl
      * @return 结果
      */
     @Override
-    public int insertAuthUsers(Integer roleId, Integer[] userIds) {
+    public boolean insertAuthUsers(Integer roleId, Integer[] userIds) {
         // 新增用户与角色管理
         List<SysUserRole> list = new ArrayList<SysUserRole>();
         for (Integer userId : userIds) {
@@ -371,6 +355,6 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole> impl
             ur.setRoleId(roleId);
             list.add(ur);
         }
-        return userRoleMapper.batchUserRole(list);
+        return userRoleService.saveBatch(list);
     }
 }
