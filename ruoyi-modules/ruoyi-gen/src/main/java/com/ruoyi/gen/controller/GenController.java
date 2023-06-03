@@ -65,7 +65,7 @@ public class GenController extends BaseController {
         List<GenTableColumn> list = genTableColumnService.list(Wrappers.<GenTableColumn>lambdaQuery().eq(GenTableColumn::getTableId, tableId).orderByAsc(GenTableColumn::getSort));
         Map<String, Object> map = new HashMap<String, Object>();
         map.put("info", table);
-        map.put("rows", list);
+        map.put("records", list);
         map.put("tables", tables);
         return success(map);
     }
