@@ -3,6 +3,8 @@ package com.ruoyi.gen.service;
 import java.util.List;
 import java.util.Map;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.baomidou.mybatisplus.extension.service.IService;
 import com.ruoyi.gen.domain.GenTable;
 
 /**
@@ -10,14 +12,21 @@ import com.ruoyi.gen.domain.GenTable;
  *
  * @author ruoyi
  */
-public interface IGenTableService {
+public interface IGenTableService extends IService<GenTable> {
     /**
      * 查询业务列表
      *
      * @param genTable 业务信息
      * @return 业务集合
      */
-    public List<GenTable> selectGenTableList(GenTable genTable);
+    public Page<GenTable> selectGenTableList(GenTable genTable, Page<GenTable> page);
+
+    /**
+     * 查询据库列表
+     *
+     * @return 数据库集合
+     */
+    public List<GenTable> selectDbSchemaList();
 
     /**
      * 查询据库列表
@@ -25,7 +34,7 @@ public interface IGenTableService {
      * @param genTable 业务信息
      * @return 数据库表集合
      */
-    public List<GenTable> selectDbTableList(GenTable genTable);
+    public Page<GenTable> selectDbTableList(GenTable genTable, Page<GenTable> page);
 
     /**
      * 查询据库列表

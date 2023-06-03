@@ -2,6 +2,7 @@ package com.ruoyi.gen.domain;
 
 import javax.validation.constraints.NotBlank;
 
+import com.baomidou.mybatisplus.annotation.TableId;
 import com.ruoyi.common.core.utils.StringUtils;
 import com.ruoyi.common.core.web.domain.BaseEntity;
 import lombok.Data;
@@ -12,12 +13,13 @@ import lombok.Data;
  * @author ruoyi
  */
 @Data
-public class GenTableColumn extends BaseEntity {
+public class GenTableColumn extends BaseEntity<GenTableColumn> {
     private static final long serialVersionUID = 1L;
 
     /**
      * 编号
      */
+    @TableId
     private Integer columnId;
 
     /**

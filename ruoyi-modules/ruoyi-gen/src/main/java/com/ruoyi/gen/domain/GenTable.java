@@ -4,6 +4,8 @@ import java.util.List;
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
 import lombok.Data;
 import org.apache.commons.lang3.ArrayUtils;
 import com.ruoyi.common.core.constant.GenConstants;
@@ -16,12 +18,13 @@ import com.ruoyi.common.core.web.domain.BaseEntity;
  * @author ruoyi
  */
 @Data
-public class GenTable extends BaseEntity {
+public class GenTable extends BaseEntity<GenTable> {
     private static final long serialVersionUID = 1L;
 
     /**
      * 编号
      */
+    @TableId
     private Integer tableId;
 
     /**
@@ -29,6 +32,11 @@ public class GenTable extends BaseEntity {
      */
     @NotBlank(message = "表名称不能为空")
     private String tableName;
+
+    /**
+     * 库名称
+     */
+    private String tableSchema;
 
     /**
      * 表描述
@@ -100,17 +108,20 @@ public class GenTable extends BaseEntity {
     /**
      * 主键信息
      */
+    @TableField(exist = false)
     private GenTableColumn pkColumn;
 
     /**
      * 子表信息
      */
+    @TableField(exist = false)
     private GenTable subTable;
 
     /**
      * 表列信息
      */
     @Valid
+    @TableField(exist = false)
     private List<GenTableColumn> columns;
 
     /**
@@ -121,26 +132,31 @@ public class GenTable extends BaseEntity {
     /**
      * 树编码字段
      */
+    @TableField(exist = false)
     private String treeCode;
 
     /**
      * 树父编码字段
      */
+    @TableField(exist = false)
     private String treeParentCode;
 
     /**
      * 树名称字段
      */
+    @TableField(exist = false)
     private String treeName;
 
     /**
      * 上级菜单ID字段
      */
+    @TableField(exist = false)
     private String parentMenuId;
 
     /**
      * 上级菜单名称字段
      */
+    @TableField(exist = false)
     private String parentMenuName;
 
 

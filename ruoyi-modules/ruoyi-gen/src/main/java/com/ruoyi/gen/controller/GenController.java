@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Map;
 import javax.servlet.http.HttpServletResponse;
 
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
@@ -48,10 +50,8 @@ public class GenController extends BaseController {
      */
     @RequiresPermissions("tool:gen:list")
     @GetMapping("/list")
-    public TableDataInfo genList(GenTable genTable) {
-        startPage();
-        List<GenTable> list = genTableService.selectGenTableList(genTable);
-        return getDataTable(list);
+    public TableDataInfo genList(GenTable genTable, Page<GenTable> page) {
+        return getDataTable(genTableService.selectGenTableList(genTable, page));
     }
 
     /**
@@ -62,7 +62,7 @@ public class GenController extends BaseController {
     public AjaxResult getInfo(@PathVariable Integer tableId) {
         GenTable table = genTableService.selectGenTableById(tableId);
         List<GenTable> tables = genTableService.selectGenTableAll();
-        List<GenTableColumn> list = genTableColumnService.selectGenTableColumnListByTableId(tableId);
+        List<GenTableColumn> list = genTableColumnService.list(Wrappers.<GenTableColumn>lambdaQuery().eq(GenTableColumn::getTableId, tableId).orderByAsc(GenTableColumn::getSort));
         Map<String, Object> map = new HashMap<String, Object>();
         map.put("info", table);
         map.put("rows", list);
@@ -73,24 +73,28 @@ public class GenController extends BaseController {
     /**
      * 查询数据库列表
      */
+    @GetMapping("/db/schemaList")
+    public AjaxResult selectDbSchemaList() {
+        List<GenTable> list = genTableService.selectDbSchemaList();
+        return success(list);
+    }
+
+    /**
+     * 查询数据库列表
+     */
     @RequiresPermissions("tool:gen:list")
     @GetMapping("/db/list")
-    public TableDataInfo dataList(GenTable genTable) {
-        startPage();
-        List<GenTable> list = genTableService.selectDbTableList(genTable);
-        return getDataTable(list);
+    public TableDataInfo dataList(GenTable genTable, Page<GenTable> page) {
+        return getDataTable(genTableService.selectDbTableList(genTable, page));
     }
 
     /**
      * 查询数据表字段列表
      */
     @GetMapping(value = "/column/{tableId}")
-    public TableDataInfo columnList(Integer tableId) {
-        TableDataInfo dataInfo = new TableDataInfo();
-        List<GenTableColumn> list = genTableColumnService.selectGenTableColumnListByTableId(tableId);
-        dataInfo.setRecords(list);
-        dataInfo.setTotal(list.size());
-        return dataInfo;
+    public AjaxResult columnList(Integer tableId) {
+        List<GenTableColumn> list = genTableColumnService.list(Wrappers.<GenTableColumn>lambdaQuery().eq(GenTableColumn::getTableId, tableId).orderByAsc(GenTableColumn::getSort));
+        return success(list);
     }
 
     /**
